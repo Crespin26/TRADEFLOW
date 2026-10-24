@@ -12,7 +12,7 @@ Cette base reste accessible via le profil de démonstration Administrateur → G
 ## Approche retenue : interfaces avant configuration
 
 1. **Fondations visuelles et navigation — implémentées.** Thème commun, composants réutilisables, états d’écran, guide interactif et six profils de démonstration. Voir [UI_FOUNDATIONS.md](UI_FOUNDATIONS.md).
-2. **Catalogue public.** Accueil, catégories, recherche, filtres et fiches produit avec données fictives.
+2. **Catalogue public — implémenté avec données fictives.** Accueil, catégories, recherche sans accents, filtres combinables, tri, fiches produit et présentation de l’entreprise. Visuels illustrés ; panier et connexion à venir. Voir [PUBLIC_CATALOG.md](PUBLIC_CATALOG.md).
 3. **Panier et connexion.** Panier à plusieurs lignes, formulaires d’inscription/connexion, conservation du panier et confirmation simulée.
 4. **Espace client.** Commandes personnelles, livraisons, profil, adresses, documents et demandes.
 5. **Gestion interne.** Produits, publication, stocks, inventaires, entrepôts et partenaires.

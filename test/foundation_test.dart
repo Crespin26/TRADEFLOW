@@ -27,7 +27,7 @@ void main() {
       expect(find.text('Produits & stocks'), findsNothing);
       await tester.tap(find.text('Catalogue').last);
       await tester.pumpAndSettle();
-      expect(find.text('Catalogue : interface à venir'), findsOneWidget);
+      expect(find.text('Catalogue fictif · Prix indicatifs'), findsOneWidget);
       expect(store.loaded, isFalse);
     },
   );

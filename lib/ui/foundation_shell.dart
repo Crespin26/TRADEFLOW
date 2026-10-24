@@ -4,6 +4,8 @@ import 'demo_profile.dart';
 import 'design_system/components.dart';
 import 'design_system/theme.dart';
 import 'foundation_gallery.dart';
+import 'catalog/catalog_page.dart';
+import 'catalog/public_home.dart';
 
 class FoundationShell extends StatefulWidget {
   const FoundationShell({super.key, required this.managementBuilder});
@@ -15,6 +17,7 @@ class FoundationShell extends StatefulWidget {
 class _FoundationShellState extends State<FoundationShell> {
   DemoProfile profile = DemoProfile.visitor;
   int selected = 0;
+  String? catalogCategory;
 
   Future<void> chooseProfile() async {
     final choice = await showModalBottomSheet<DemoProfile>(
@@ -60,6 +63,7 @@ class _FoundationShellState extends State<FoundationShell> {
       setState(() {
         profile = choice;
         selected = 0;
+        catalogCategory = null;
       });
     }
   }
@@ -163,6 +167,8 @@ class _FoundationShellState extends State<FoundationShell> {
                           maxWidth: FlowLayout.contentWidth,
                         ),
                         child: ListView(
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior.onDrag,
                           key: ValueKey('${profile.name}-$selected'),
                           padding: EdgeInsets.all(wide ? 32 : 20),
                           children: [
@@ -192,7 +198,21 @@ class _FoundationShellState extends State<FoundationShell> {
                               ),
                             ),
                             const SizedBox(height: 24),
-                            if (selected == 0)
+                            if (selected == 0 && profile == DemoProfile.visitor)
+                              PublicHome(
+                                onCatalog: (category) => setState(() {
+                                  catalogCategory = category;
+                                  selected = 1;
+                                }),
+                              )
+                            else if (destination.label == 'Catalogue')
+                              CatalogPage(
+                                key: ValueKey(
+                                  'catalog-${catalogCategory ?? "all"}',
+                                ),
+                                initialCategory: catalogCategory,
+                              )
+                            else if (selected == 0)
                               ...overview(destinations)
                             else if (profile == DemoProfile.administrator &&
                                 selected == 1)
@@ -220,7 +240,7 @@ class _FoundationShellState extends State<FoundationShell> {
                               ),
                             const SizedBox(height: 24),
                             const Text(
-                              'Phase 1 · Fondations visuelles et navigation',
+                              'Phase 2 · Catalogue public de démonstration',
                               style: TextStyle(
                                 color: FlowColors.muted,
                                 fontSize: 12,

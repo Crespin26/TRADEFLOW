@@ -2,7 +2,7 @@
 
 ## Explorer l’application
 
-Au démarrage, TradeFlow affiche l’espace **visiteur**. Le catalogue, le panier et les espaces métier sont pour l’instant des emplacements de navigation explicitement marqués « interface à venir » : leur contenu sera développé dans les phases suivantes.
+Au démarrage, TradeFlow affiche l’espace **visiteur**. Le catalogue et l’accueil publics ont été développés en phase 2 avec des données fictives. Le panier et les futurs espaces métier restent des emplacements de navigation explicitement marqués « interface à venir ».
 
 - L’icône de changement de compte, en haut à droite, ouvre les six profils de démonstration.
 - Le bandeau indique toujours le profil simulé et l’absence d’authentification.
@@ -56,4 +56,4 @@ Le changement de profil revient à la première destination. La navigation et le
 
 ## Étape suivante
 
-Phase 2 : construire l’accueil public, le catalogue, les catégories, les filtres et les fiches produit avec des données fictives dédiées. Le raccordement Firebase reste différé jusqu’à la validation des interfaces.
+La phase 2 est décrite dans [PUBLIC_CATALOG.md](PUBLIC_CATALOG.md). La prochaine étape est la phase 3 : panier à plusieurs lignes et parcours de connexion simulé. Le raccordement Firebase reste différé jusqu’à la validation des interfaces.

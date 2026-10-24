@@ -6,15 +6,15 @@ Application mobile de gestion commerciale internationale, construite avec Flutte
 
 TradeFlow centralise les produits, les stocks, les commandes et les partenaires commerciaux dans une interface en français. Cette première version fonctionne localement, sans compte ni connexion Firebase.
 
-## Interfaces : phase 1
+## Interfaces : phases 1 et 2
 
 L’application s’ouvre sur l’espace visiteur. Le sélecteur en haut à droite permet d’explorer six **profils de démonstration** : visiteur, client, commercial, magasinier, comptable et administrateur. Ces profils simulent la navigation ; ils ne sont pas une authentification et n’accordent aucune permission réelle.
 
-Le thème commun, les composants réutilisables et les états vide/chargement/erreur/succès sont consultables via l’icône palette. Les destinations des futures interfaces sont indiquées comme « interface à venir ». Le catalogue détaillé et les parcours client seront construits dans les phases suivantes, avant Firebase.
+Le thème commun, les composants réutilisables et les états vide/chargement/erreur/succès sont consultables via l’icône palette. Le catalogue public propose désormais huit produits fictifs, des catégories, une recherche, des filtres combinables, un tri et des fiches détaillées. L’accueil présente une sélection et une entreprise fictive. Le panier, la connexion et les autres destinations restent indiqués comme à venir, avant Firebase.
 
 Pour retrouver les fonctionnalités locales existantes : **Administrateur → Gestion → Ouvrir la gestion locale**. Les exemples de produits se chargent depuis l’accueil de cette gestion, lorsque l’espace local est vide.
 
-Voir [docs/UI_FOUNDATIONS.md](docs/UI_FOUNDATIONS.md) pour les conventions et la navigation.
+Voir [docs/UI_FOUNDATIONS.md](docs/UI_FOUNDATIONS.md) pour les conventions et la navigation, et [docs/PUBLIC_CATALOG.md](docs/PUBLIC_CATALOG.md) pour les parcours publics et leurs limites. Les visuels produits sont des illustrations de démonstration, sans photographies ni données commerciales réelles.
 
 ## Fonctionnalités de gestion locale disponibles
 
@@ -88,6 +88,8 @@ lib/
   ui/demo_profile.dart         # Profils et destinations simulés
   ui/foundation_shell.dart     # Navigation publique, client et interne
   ui/foundation_gallery.dart   # Guide interactif des composants
+  ui/catalog/                  # Accueil public, catalogue et fiches produit
+  domain/public_catalog.dart   # Modèle public et données fictives indépendantes
 firebase/                      # Règles de refus par défaut
 test/                         # Tests métier, persistance et interface
 ```
