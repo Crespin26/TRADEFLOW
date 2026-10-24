@@ -1,37 +1,33 @@
 # Feuille de route TradeFlow
 
-## Livré : prototype local
+## Base existante : prototype de gestion locale
 
-- Projet Flutter Android, iOS et Web, interface française adaptative.
 - Produits, stocks, clients et fournisseurs.
-- Commandes à une ligne et suivi confirmé → expédié → livré.
-- Annulation avant expédition et restitution des quantités.
-- Historique des mouvements et alertes de stock dans l’application.
-- Sauvegarde locale et tests métier et interface.
-- Procédure de raccordement Firebase et règles de refus par défaut.
+- Commandes à une ligne, expédition, livraison et annulation avant expédition.
+- Historique des mouvements, alertes et sauvegarde locale.
+- Tests métier et interface ; préparation documentaire pour Firebase.
 
-## Prochaine étape : backend d’entreprise
+Cette base reste accessible via le profil de démonstration Administrateur → Gestion.
 
-- Choisir le projet Firebase, les identifiants des applications et la région.
-- Authentification, entreprises, rôles et isolation des données.
-- Dépôt Firestore, transactions atomiques et validation côté serveur.
-- Tests des règles avec les émulateurs, migration et sauvegardes.
-- Synchronisation et stratégie de conflits, chargement paginé et gestion réseau.
+## Approche retenue : interfaces avant configuration
 
-## Étape suivante : gestion commerciale complète
+1. **Fondations visuelles et navigation — implémentées.** Thème commun, composants réutilisables, états d’écran, guide interactif et six profils de démonstration. Voir [UI_FOUNDATIONS.md](UI_FOUNDATIONS.md).
+2. **Catalogue public.** Accueil, catégories, recherche, filtres et fiches produit avec données fictives.
+3. **Panier et connexion.** Panier à plusieurs lignes, formulaires d’inscription/connexion, conservation du panier et confirmation simulée.
+4. **Espace client.** Commandes personnelles, livraisons, profil, adresses, documents et demandes.
+5. **Gestion interne.** Produits, publication, stocks, inventaires, entrepôts et partenaires.
+6. **Opérations commerciales.** Ventes, devis, achats, réceptions, livraisons partielles et retours.
+7. **Finance et commerce international.** Factures, paiements simulés, devises, coûts et documents internationaux.
+8. **Pilotage et administration.** Tableaux de bord par rôle, rapports, collaborateurs et paramètres.
+9. **Validation des interfaces.** Parcours complets, petits écrans, accessibilité et cohérence des informations par profil.
+10. **Connexion aux services.** Firebase Authentication, Firestore, Storage, règles d’accès, transactions, synchronisation, notifications et paiement réel.
 
-- Modification et archivage des produits et partenaires.
-- Commandes à plusieurs lignes, retours et livraisons partielles.
-- Achats auprès des fournisseurs et réceptions de marchandises.
-- Paiements, factures et journal des transactions financières.
-- Multidevise, taux de change, unités, taxes et informations douanières.
-- Notifications push, exports, filtres par période et indicateurs financiers.
+Les profils de démonstration ne sont pas des comptes ni des permissions réelles. Les fonctionnalités des phases futures ne sont pas implicitement disponibles dans le prototype.
 
 ## Avant distribution
 
-- Revue métier avec l’entreprise et validation des droits de publication.
-- Tests réels sur Android et iOS, accessibilité et performance.
-- Icônes finales, identité de l’application et signature de production.
-- Confidentialité, conservation des données et supervision du backend.
-
-Les fonctions de cette feuille de route ne sont pas implicitement disponibles dans le prototype.
+- Valider les droits de publication et la confidentialité avec l’entreprise.
+- Tester les règles de sécurité et les opérations concurrentes du backend.
+- Vérifier les compilations et parcours réels sur Android et iOS.
+- Finaliser identité, icônes, signature, sauvegardes et supervision.
+- Retirer le sélecteur de profils de démonstration de la distribution de production.

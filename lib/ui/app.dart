@@ -5,10 +5,13 @@ import 'package:intl/intl.dart';
 import '../domain/models.dart';
 import '../domain/trade_store.dart';
 import 'forms.dart';
+import 'design_system/theme.dart';
+import 'design_system/components.dart';
+import 'foundation_shell.dart';
 
-const ink = Color(0xFF142C38);
-const teal = Color(0xFF007F73);
-const canvas = Color(0xFFF4F7F8);
+const ink = FlowColors.ink;
+const teal = FlowColors.primary;
+const canvas = FlowColors.background;
 String money(int value) =>
     '${NumberFormat.decimalPattern('fr').format(value)} F CFA';
 String dateLabel(DateTime date) =>
@@ -24,66 +27,54 @@ class TradeFlowApp extends StatelessWidget {
     locale: const Locale('fr'),
     supportedLocales: const [Locale('fr')],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    theme: ThemeData(
-      useMaterial3: true,
-      scaffoldBackgroundColor: canvas,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: teal,
-        primary: teal,
-        surface: Colors.white,
-      ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: canvas,
-        foregroundColor: ink,
-        centerTitle: false,
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: canvas,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-      ),
-      cardTheme: CardThemeData(
-        elevation: 0,
-        color: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      ),
+    theme: buildTradeFlowTheme(),
+    home: FoundationShell(
+      managementBuilder: (_) => LocalManagementPage(store: store),
     ),
-    home: ListenableBuilder(
-      listenable: store,
-      builder: (context, _) {
-        if (store.loadError != null) {
-          return Scaffold(
-            body: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.cloud_off_rounded, size: 48),
-                    const SizedBox(height: 16),
-                    Text(store.loadError!, textAlign: TextAlign.center),
-                    const SizedBox(height: 16),
-                    FilledButton(
-                      onPressed: store.busy ? null : store.load,
-                      child: const Text('Réessayer'),
-                    ),
-                  ],
-                ),
+  );
+}
+
+class LocalManagementPage extends StatelessWidget {
+  const LocalManagementPage({super.key, required this.store});
+  final TradeStore store;
+  @override
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: store,
+    builder: (context, _) {
+      if (store.loadError != null) {
+        return Scaffold(
+          appBar: AppBar(title: const Text('Gestion locale')),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: FlowStateView(
+                title: 'Données indisponibles',
+                description: store.loadError!,
+                icon: Icons.cloud_off_outlined,
+                tone: FlowTone.error,
+                actionLabel: 'Réessayer',
+                onAction: store.busy ? null : store.load,
               ),
             ),
-          );
-        }
-        if (!store.loaded) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-        return TradeShell(store: store);
-      },
-    ),
+          ),
+        );
+      }
+      if (!store.loaded) {
+        return const Scaffold(
+          body: Center(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: FlowStateView(
+                title: 'Chargement des données',
+                description: 'Ouverture de votre espace local.',
+                loading: true,
+              ),
+            ),
+          ),
+        );
+      }
+      return TradeShell(store: store);
+    },
   );
 }
 

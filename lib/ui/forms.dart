@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../domain/models.dart';
 import '../domain/trade_store.dart';
+import 'design_system/components.dart';
 
 String friendlyError(Object error) => switch (error) {
   ArgumentError() => error.message.toString(),
@@ -37,9 +38,9 @@ Widget field(
   bool required = true,
 }) => Padding(
   padding: const EdgeInsets.only(bottom: 16),
-  child: TextFormField(
+  child: FlowField(
     controller: controller,
-    decoration: InputDecoration(labelText: label),
+    label: label,
     keyboardType: numeric ? TextInputType.number : keyboard,
     maxLength: numeric ? 10 : 160,
     inputFormatters: numeric ? [FilteringTextInputFormatter.digitsOnly] : null,
@@ -138,16 +139,7 @@ class _SaveDialogState extends State<SaveDialog> {
           onPressed: saving ? null : () => Navigator.pop(context),
           child: const Text('Fermer'),
         ),
-        FilledButton(
-          onPressed: saving ? null : submit,
-          child: saving
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Text('Enregistrer'),
-        ),
+        FlowButton(label: 'Enregistrer', onPressed: submit, loading: saving),
       ],
     ),
   );

@@ -5,6 +5,31 @@ import 'package:tradeflow_mobile/ui/app.dart';
 
 import 'trade_store_test.dart' show MemoryRepository;
 
+Future<void> chooseDemoProfile(WidgetTester tester, String role) async {
+  await tester.tap(find.byTooltip('Changer de profil de démonstration'));
+  await tester.pumpAndSettle();
+  await tester.scrollUntilVisible(
+    find.text(role),
+    180,
+    scrollable: find
+        .descendant(
+          of: find.byKey(const ValueKey('demo-profiles-scroll')),
+          matching: find.byType(Scrollable),
+        )
+        .first,
+  );
+  await tester.tap(find.text(role));
+  await tester.pumpAndSettle();
+}
+
+Future<void> openManagement(WidgetTester tester) async {
+  await chooseDemoProfile(tester, 'Administrateur');
+  await tester.tap(find.text('Gestion').last);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Ouvrir la gestion locale'));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets('mobile navigation, product validation and stock alerts', (
     tester,
@@ -17,6 +42,7 @@ void main() {
     await store.load();
     await tester.pumpWidget(TradeFlowApp(store: store));
     await tester.pumpAndSettle();
+    await openManagement(tester);
     expect(find.text('Vue d’ensemble'), findsOneWidget);
     await tester.tap(find.text('Produits'));
     await tester.pumpAndSettle();
@@ -50,6 +76,7 @@ void main() {
     await store.loadDemo();
     await tester.pumpWidget(TradeFlowApp(store: store));
     await tester.pumpAndSettle();
+    await openManagement(tester);
     expect(find.byType(NavigationRail), findsOneWidget);
     for (final title in [
       'Produits',
