@@ -36,7 +36,16 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Fiche produit'), findsOneWidget);
       expect(find.text('Réf. PUB-RIZ-025'), findsOneWidget);
-      await tester.tap(find.text('Conditionnement'));
+      await tester.scrollUntilVisible(
+        find.text('Agrandir la photo'),
+        250,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Agrandir la photo'));
+      await tester.pumpAndSettle();
+      expect(find.text('Photographie'), findsOneWidget);
+      await tester.tap(find.byType(BackButton));
       await tester.pumpAndSettle();
       expect(find.text('Ajouter au panier'), findsOneWidget);
       expect(tester.takeException(), isNull);

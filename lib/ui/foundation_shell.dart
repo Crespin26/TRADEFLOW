@@ -21,10 +21,16 @@ class FoundationShell extends StatefulWidget {
 
 class _FoundationShellState extends State<FoundationShell> {
   DemoProfile profile = DemoProfile.visitor;
-  int selected = 0;
+  String selectedLabel = 'Accueil';
+  bool followCustomerSession = true;
+  DemoProfile displayedProfile(bool connected) =>
+      followCustomerSession && connected ? DemoProfile.client : profile;
   String? catalogCategory;
 
   Future<void> chooseProfile() async {
+    final activeProfile = displayedProfile(
+      ShoppingScope.of(context).customerReady,
+    );
     final choice = await showModalBottomSheet<DemoProfile>(
       context: context,
       showDragHandle: true,
@@ -51,7 +57,7 @@ class _FoundationShellState extends State<FoundationShell> {
                   leading: Icon(role.icon),
                   title: Text(role.label),
                   subtitle: Text(role.description),
-                  trailing: profile == role
+                  trailing: activeProfile == role
                       ? const Icon(
                           Icons.check_circle,
                           color: FlowColors.primary,
@@ -67,7 +73,8 @@ class _FoundationShellState extends State<FoundationShell> {
     if (choice != null && mounted) {
       setState(() {
         profile = choice;
-        selected = 0;
+        followCustomerSession = false;
+        selectedLabel = destinationsFor(choice).first.label;
         catalogCategory = null;
       });
     }
@@ -76,7 +83,11 @@ class _FoundationShellState extends State<FoundationShell> {
   @override
   Widget build(BuildContext context) {
     final shopping = ShoppingScope.of(context);
-    final destinations = destinationsFor(profile);
+    final activeProfile = displayedProfile(shopping.customerReady);
+    final destinations = destinationsFor(activeProfile);
+    final selected = destinations
+        .indexWhere((d) => d.label == selectedLabel)
+        .clamp(0, destinations.length - 1);
     final destination = destinations[selected];
     final wide = MediaQuery.sizeOf(context).width >= FlowLayout.railBreakpoint;
     return Scaffold(
@@ -149,12 +160,14 @@ class _FoundationShellState extends State<FoundationShell> {
                     color: FlowColors.primary,
                   ),
                   Text(
-                    'Démonstration · ${profile.label}',
+                    'Démonstration · ${activeProfile.label}',
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   Text(
-                    shopping.signedIn
+                    shopping.customerReady
                         ? 'Session client simulée'
+                        : shopping.signedIn
+                        ? 'Vérification simulée à terminer'
                         : 'Authentification non connectée',
                     style: TextStyle(color: FlowColors.muted, fontSize: 12),
                   ),
@@ -170,7 +183,7 @@ class _FoundationShellState extends State<FoundationShell> {
                       minExtendedWidth: 200,
                       selectedIndex: selected,
                       onDestinationSelected: (i) =>
-                          setState(() => selected = i),
+                          setState(() => selectedLabel = destinations[i].label),
                       destinations: [
                         for (final item in destinations)
                           NavigationRailDestination(
@@ -189,11 +202,11 @@ class _FoundationShellState extends State<FoundationShell> {
                         child: ListView(
                           keyboardDismissBehavior:
                               ScrollViewKeyboardDismissBehavior.onDrag,
-                          key: ValueKey('${profile.name}-$selected'),
+                          key: ValueKey('space-${destination.label}'),
                           padding: EdgeInsets.all(wide ? 32 : 20),
                           children: [
                             Text(
-                              profile.space.toUpperCase(),
+                              activeProfile.space.toUpperCase(),
                               style: const TextStyle(
                                 color: FlowColors.primary,
                                 fontWeight: FontWeight.w700,
@@ -203,7 +216,8 @@ class _FoundationShellState extends State<FoundationShell> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              selected == 0 && profile == DemoProfile.visitor
+                              selected == 0 &&
+                                      activeProfile == DemoProfile.visitor
                                   ? 'Le commerce,\nà portée de main.'
                                   : destination.label,
                               style: Theme.of(context).textTheme.headlineLarge,
@@ -218,25 +232,27 @@ class _FoundationShellState extends State<FoundationShell> {
                               ),
                             ),
                             const SizedBox(height: 24),
-                            if (selected == 0 && profile == DemoProfile.visitor)
+                            if (selected == 0 &&
+                                activeProfile == DemoProfile.visitor)
                               PublicHome(
                                 onCatalog: (category) => setState(() {
                                   catalogCategory = category;
-                                  selected = 1;
+                                  selectedLabel = 'Catalogue';
                                 }),
                               )
-                            else if (profile == DemoProfile.client &&
+                            else if (activeProfile == DemoProfile.client &&
                                 selected == 0)
                               CustomerHome(
-                                onBrowse: () => setState(() => selected = 1),
+                                onBrowse: () =>
+                                    setState(() => selectedLabel = 'Catalogue'),
                               )
-                            else if (profile == DemoProfile.client &&
+                            else if (activeProfile == DemoProfile.client &&
                                 destination.label == 'Commandes')
                               const CustomerOrdersContents()
                             else if (destination.label == 'Panier')
                               CartContents(
                                 onBrowse: () => setState(() {
-                                  selected = 1;
+                                  selectedLabel = 'Catalogue';
                                 }),
                               )
                             else if (destination.label == 'Profil')
@@ -250,7 +266,8 @@ class _FoundationShellState extends State<FoundationShell> {
                               )
                             else if (selected == 0)
                               ...overview(destinations)
-                            else if (profile == DemoProfile.administrator &&
+                            else if (activeProfile ==
+                                    DemoProfile.administrator &&
                                 selected == 1)
                               FlowStateView(
                                 title: 'Prototype de gestion locale',
@@ -272,7 +289,10 @@ class _FoundationShellState extends State<FoundationShell> {
                                     '${destination.description} Cette étape prépare la navigation ; le contenu détaillé sera construit dans les prochaines phases.',
                                 icon: destination.icon,
                                 actionLabel: 'Retour à l’accueil',
-                                onAction: () => setState(() => selected = 0),
+                                onAction: () => setState(
+                                  () =>
+                                      selectedLabel = destinations.first.label,
+                                ),
                               ),
                             const SizedBox(height: 24),
                             const Text(
@@ -297,7 +317,8 @@ class _FoundationShellState extends State<FoundationShell> {
           ? null
           : NavigationBar(
               selectedIndex: selected,
-              onDestinationSelected: (i) => setState(() => selected = i),
+              onDestinationSelected: (i) =>
+                  setState(() => selectedLabel = destinations[i].label),
               destinations: [
                 for (final item in destinations)
                   NavigationDestination(
@@ -366,7 +387,8 @@ class _FoundationShellState extends State<FoundationShell> {
                 child: Card(
                   child: InkWell(
                     borderRadius: BorderRadius.circular(16),
-                    onTap: () => setState(() => selected = i),
+                    onTap: () =>
+                        setState(() => selectedLabel = destinations[i].label),
                     child: Padding(
                       padding: const EdgeInsets.all(20),
                       child: Row(

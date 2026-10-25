@@ -5,6 +5,8 @@ import '../design_system/components.dart';
 import '../design_system/theme.dart';
 import 'product_detail.dart';
 import 'product_widgets.dart';
+import 'catalog_photo.dart';
+import '../../domain/catalog_photos.dart';
 
 class PublicHome extends StatelessWidget {
   const PublicHome({super.key, required this.onCatalog});
@@ -13,6 +15,11 @@ class PublicHome extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
+      ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: CatalogPhotoView(photo: catalogPhotos['warehouse'], height: 200),
+      ),
+      const SizedBox(height: 16),
       Container(
         padding: const EdgeInsets.all(28),
         decoration: BoxDecoration(
@@ -55,7 +62,7 @@ class PublicHome extends StatelessWidget {
       ),
       const SizedBox(height: 16),
       const Text(
-        'Démonstration : produits, visuels et prix fictifs.',
+        'Catalogue fictif · Photographies illustratives · Prix indicatifs.',
         style: TextStyle(fontSize: 12, color: FlowColors.muted),
       ),
       const SizedBox(height: 28),
@@ -116,6 +123,17 @@ class PublicHome extends StatelessWidget {
               const SizedBox(height: 12),
               const SelectableText(
                 'Cotonou, Bénin · Adresse indicative\ncontact@tradeflow.example',
+              ),
+              const SizedBox(height: 12),
+              TextButton.icon(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => const PhotoCreditsPage(),
+                  ),
+                ),
+                icon: const Icon(Icons.photo_library_outlined),
+                label: const Text('Crédits photographiques'),
               ),
               const SizedBox(height: 12),
               const Text(

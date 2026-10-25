@@ -126,7 +126,21 @@ class CustomerOrderCard extends StatelessWidget {
           children: [
             FlowBadge(order.status.label, tone: orderTone(order.status)),
             const SizedBox(height: 12),
-            Text(order.id, style: Theme.of(context).textTheme.titleMedium),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (order.receipt.lines.isNotEmpty) ...[
+                  ProductThumbnail(product: order.receipt.lines.first.product),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
+                    order.id,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 8),
             Text(
               order.receipt.lines

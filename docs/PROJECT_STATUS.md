@@ -2,7 +2,7 @@
 
 ## État du produit
 
-TradeFlow est actuellement un prototype Flutter local, avec un catalogue fictif et un parcours de commande simulé. Le développement suit l’ordre validé : interfaces et parcours d’abord, connexion aux services ensuite.
+TradeFlow est actuellement un prototype Flutter local, avec un catalogue fictif et un parcours de commande simulé. Le développement suit l’ordre validé : interfaces et parcours d’abord, connexion aux services ensuite. La [recette des phases 1 à 4](ACCEPTANCE_PHASES_1_4.md) et les [crédits photographiques](PHOTO_CREDITS.md) présentent les derniers contrôles et ressources intégrées.
 
 | Ensemble | État vérifié | Contenu |
 |---|---|---|
@@ -48,12 +48,12 @@ Les autres développeurs doivent sélectionner leur propre SDK via **Flutter: Ch
 
 - Format Dart : conforme.
 - Analyse Flutter avec le SDK permanent : aucune anomalie signalée.
-- Tests : 52 scénarios réussis avec le SDK permanent.
+- Tests : 56 scénarios réussis avec le SDK permanent.
 - Racines de packages : 47 présentes, aucune temporaire.
 - Diff Git : aucune erreur d’espacement signalée.
 - Compilation Web de production : réussie avec le SDK permanent.
 
-Les tests couvrent notamment les règles de stock, l’annulation, la persistance, les échecs d’écriture, les recherches et filtres, les six profils, les petits/grands écrans et les parcours de connexion/commande simulés. La phase 4 ajoute des contrôles sur l’historique client, les demandes, les adresses par défaut, leurs instantanés, les notifications et les vues après déconnexion. Ils ne remplacent pas les essais sur appareils Android et iOS.
+Les tests couvrent notamment les règles de stock, l’annulation, la persistance, les échecs d’écriture, les recherches et filtres, les six profils, les petits/grands écrans et les parcours de connexion/commande simulés. La recette des quatre phases ajoute le décodage hors réseau des photos et la navigation entre sessions. La phase 4 ajoute des contrôles sur l’historique client, les demandes, les adresses par défaut, leurs instantanés, les notifications et les vues après déconnexion. Ils ne remplacent pas les essais sur appareils Android et iOS.
 
 ## Travail restant
 
@@ -68,10 +68,10 @@ Les tests couvrent notamment les règles de stock, l’annulation, la persistanc
 
 ## État avant le prochain commit/push
 
-Les commits existants couvrent la base et les phases 1 à 3, dont le correctif de configuration IDE. Les compléments de la phase 3 (adresse réutilisable, liaison vers l’historique) et l’espace client de phase 4 constituent le travail local du prochain commit. Voir [CUSTOMER_SPACE_DEMO.md](CUSTOMER_SPACE_DEMO.md).
+Les commits existants couvrent la base et les phases 1 à 3, dont le correctif de configuration IDE. Les quatre phases sont commitées. La recette transversale, les photographies locales et les corrections de navigation constituent le travail local du prochain commit. Voir [CUSTOMER_SPACE_DEMO.md](CUSTOMER_SPACE_DEMO.md).
 
 Les réglages SDK personnels et les fichiers générés restent exclus. Les fichiers de configuration VS Code partageables peuvent être commités. Le push doit transmettre les sources et la documentation, sans les caches ni le dossier de compilation.
 
 ## Formulation pour expliquer le problème
 
-> Les erreurs affichées dans VS Code venaient d’une configuration locale des dépendances qui référençait un SDK Flutter et un cache temporaires. Les imports non résolus provoquaient une cascade de diagnostics. Les dépendances ont été régénérées avec l’installation permanente et le SDK de l’IDE a été configuré. L’analyse ne signale plus d’anomalie et les 52 tests passent ; un rechargement de VS Code permet de rafraîchir les diagnostics de l’éditeur.
+> Les erreurs affichées dans VS Code venaient d’une configuration locale des dépendances qui référençait un SDK Flutter et un cache temporaires. Les imports non résolus provoquaient une cascade de diagnostics. Les dépendances ont été régénérées avec l’installation permanente et le SDK de l’IDE a été configuré. L’analyse ne signale plus d’anomalie et les 56 tests passent ; un rechargement de VS Code permet de rafraîchir les diagnostics de l’éditeur.

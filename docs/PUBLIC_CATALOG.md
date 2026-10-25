@@ -4,7 +4,7 @@
 
 - **Visiteur → Accueil** : présentation, catégories, sélection de produits et entreprise de démonstration.
 - **Visiteur ou Client → Catalogue** : huit produits fictifs, recherche, filtres et tri.
-- **Voir le produit** : fiche détaillée, illustrations, disponibilité, prix par conditionnement, description, caractéristiques, origine et conditions indicatives.
+- **Voir le produit** : fiche détaillée, photographie agrandissable, disponibilité, prix par conditionnement, description, caractéristiques, origine et conditions indicatives.
 - **À découvrir aussi** : navigation vers les autres produits de la même catégorie lorsqu’il y en a.
 
 Aucun compte n’est nécessaire pour consulter ces interfaces. Les données publiques sont indépendantes de `TradeStore` et des produits locaux internes. Le modèle public ne contient ni coût d’achat, ni quantité de stock, ni coordonnées de partenaires.
@@ -24,7 +24,7 @@ Le nombre de résultats est affiché. En l’absence de résultat, une action r�
 
 ## Nature des données et limites
 
-Les noms, prix, caractéristiques, disponibilités et coordonnées d’entreprise sont fictifs. Les visuels sont des illustrations Flutter de démonstration ; ce ne sont pas des photographies de marchandises réelles. Les trois variantes de présentation de chaque fiche servent à valider l’interface de galerie.
+Les noms, prix, caractéristiques, disponibilités et coordonnées d’entreprise sont fictifs. Les visuels sont des photographies de Pexels et Unsplash intégrées localement. Ce sont des photos illustratives, et non les photos certifiées des références vendues. Chaque fiche propose un agrandissement avec zoom. Voir [PHOTO_CREDITS.md](PHOTO_CREDITS.md).
 
 Les produits ne proviennent pas de Firebase et ne sont pas synchronisés avec la gestion locale. L’entreprise présentée est fictive et son adresse e-mail utilise le domaine réservé `.example`.
 
@@ -36,6 +36,8 @@ La phase 3 ajoute l’action Ajouter au panier, le panier sauvegardé localement
 - `lib/ui/catalog/public_home.dart` : accueil public et présentation de l’entreprise.
 - `lib/ui/catalog/catalog_page.dart` : recherche, filtres et catalogue.
 - `lib/ui/catalog/product_detail.dart` : fiche produit et variantes de présentation.
-- `lib/ui/catalog/product_widgets.dart` : cartes, illustrations et disposition adaptative.
+- `lib/ui/catalog/product_widgets.dart` : cartes, miniatures et disposition adaptative.
+- `lib/ui/catalog/catalog_photo.dart` : photo locale, zoom, crédits et repli en cas d’absence.
+- `lib/domain/catalog_photos.dart` : association des références aux photographies et à leurs crédits.
 
 La grille utilise des cartes de hauteur libre pour rester lisible avec du texte agrandi. Le jeu de huit produits est affiché entièrement ; la pagination sera ajoutée avec une source distante ou un catalogue plus important.

@@ -14,7 +14,7 @@ Le thème commun, les composants réutilisables et les états vide/chargement/er
 
 Pour retrouver les fonctionnalités locales existantes : **Administrateur → Gestion → Ouvrir la gestion locale**. Les exemples de produits se chargent depuis l’accueil de cette gestion, lorsque l’espace local est vide.
 
-Voir [docs/UI_FOUNDATIONS.md](docs/UI_FOUNDATIONS.md) pour les conventions, [docs/PUBLIC_CATALOG.md](docs/PUBLIC_CATALOG.md) pour le catalogue et [docs/CART_AND_AUTH_DEMO.md](docs/CART_AND_AUTH_DEMO.md) pour le panier et les parcours simulés. La phase 4 est décrite dans [docs/CUSTOMER_SPACE_DEMO.md](docs/CUSTOMER_SPACE_DEMO.md). Les visuels produits sont des illustrations de démonstration, sans photographies ni données commerciales réelles.
+Voir [docs/UI_FOUNDATIONS.md](docs/UI_FOUNDATIONS.md) pour les conventions, [docs/PUBLIC_CATALOG.md](docs/PUBLIC_CATALOG.md) pour le catalogue et [docs/CART_AND_AUTH_DEMO.md](docs/CART_AND_AUTH_DEMO.md) pour le panier et les parcours simulés. La phase 4 est décrite dans [docs/CUSTOMER_SPACE_DEMO.md](docs/CUSTOMER_SPACE_DEMO.md). Les produits utilisent désormais de vraies photographies illustratives, embarquées dans l’application ; les références et prix restent fictifs. Les [crédits photographiques](docs/PHOTO_CREDITS.md) et la [recette des phases 1 à 4](docs/ACCEPTANCE_PHASES_1_4.md) détaillent cette mise à jour.
 
 ## Fonctionnalités de gestion locale disponibles
 
@@ -45,7 +45,7 @@ flutter devices
 flutter run -d <identifiant-appareil>
 ```
 
-La compilation iOS nécessite macOS et Xcode. Les identifiants de plateforme provisoires utilisent `com.tradeflow.tradeflow_mobile` ; les confirmer avant l’enregistrement des applications Firebase et la publication sur les stores. La signature Android de production n’est pas configurée.
+La compilation iOS nécessite macOS et Xcode. Les identifiants provisoires sont `com.tradeflow.tradeflow_mobile` pour Android et `com.tradeflow.tradeflowMobile` pour iOS ; les confirmer avant l’enregistrement des applications Firebase et la publication sur les stores. La signature Android de production n’est pas configurée.
 
 ## Développement dans VS Code
 

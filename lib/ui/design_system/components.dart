@@ -175,24 +175,27 @@ class FlowProductCard extends StatelessWidget {
     required this.priceLabel,
     required this.availability,
     this.onOpen,
+    this.image,
   });
   final String name, category, priceLabel, availability;
   final VoidCallback? onOpen;
+  final Widget? image;
   @override
   Widget build(BuildContext context) => Card(
     clipBehavior: Clip.antiAlias,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Container(
-          height: 120,
-          color: FlowColors.primary.withValues(alpha: .06),
-          child: const Icon(
-            Icons.inventory_2_outlined,
-            size: 48,
-            color: FlowColors.primary,
-          ),
-        ),
+        image ??
+            Container(
+              height: 120,
+              color: FlowColors.primary.withValues(alpha: .06),
+              child: const Icon(
+                Icons.inventory_2_outlined,
+                size: 48,
+                color: FlowColors.primary,
+              ),
+            ),
         Padding(
           padding: const EdgeInsets.all(16),
           child: Column(

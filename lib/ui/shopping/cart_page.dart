@@ -123,9 +123,18 @@ class CartContents extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      line.product.name,
-                      style: Theme.of(context).textTheme.titleMedium,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ProductThumbnail(product: line.product),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            line.product.name,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 6),
                     Text(

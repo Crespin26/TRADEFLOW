@@ -4,6 +4,7 @@ import '../../domain/public_catalog.dart';
 import '../design_system/components.dart';
 import '../design_system/theme.dart';
 import 'product_widgets.dart';
+import 'catalog_photo.dart';
 import '../shopping/shopping_scope.dart';
 import '../shopping/cart_page.dart';
 import '../forms.dart' show friendlyError;
@@ -16,7 +17,6 @@ class ProductDetailPage extends StatefulWidget {
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
-  int visual = 0;
   int quantity = 1;
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               padding: const EdgeInsets.all(24),
               children: [
                 const FlowBadge(
-                  'Produit fictif · Illustration de démonstration',
+                  'Référence fictive · Photographie illustrative',
                 ),
                 const SizedBox(height: 24),
                 LayoutBuilder(
@@ -61,31 +61,34 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(24),
-                          child: ProductIllustration(
-                            product: p,
-                            variant: visual,
-                            height: 270,
+                          child: CatalogPhotoView(
+                            photo: p.photo,
+                            height: 320,
+                            fit: BoxFit.contain,
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            for (var i = 0; i < 3; i++)
-                              ChoiceChip(
-                                label: Text(
-                                  [
-                                    'Vue principale',
-                                    'Conditionnement',
-                                    'Présentation',
-                                  ][i],
-                                ),
-                                selected: visual == i,
-                                onSelected: (_) => setState(() => visual = i),
+                        if (p.photo != null) ...[
+                          const SizedBox(height: 12),
+                          OutlinedButton.icon(
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (_) =>
+                                    PhotoViewerPage(photo: p.photo!),
                               ),
-                          ],
-                        ),
+                            ),
+                            icon: const Icon(Icons.zoom_in),
+                            label: const Text('Agrandir la photo'),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Photo : ${p.photo!.author} · ${p.photo!.source}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: FlowColors.muted,
+                            ),
+                          ),
+                        ],
                       ],
                     );
                     final info = Column(

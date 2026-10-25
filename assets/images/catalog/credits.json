@@ -1,0 +1,105 @@
+{
+  "retrieved": "2026-10-25",
+  "usage": "Photographies illustratives pour un catalogue fictif ; aucun lien commercial avec les auteurs.",
+  "photos": [
+    {
+      "id": "rice",
+      "asset": "assets/images/catalog/rice.jpg",
+      "author": "Daniela Paola Alchapar",
+      "source": "Unsplash",
+      "page": "https://unsplash.com/photos/a-pile-of-white-cotton-QTURkOqRFUQ",
+      "download": "https://images.unsplash.com/photo-1651793371427-ad065df0d208?fm=jpg&fit=max&w=1000&q=80",
+      "license": "https://unsplash.com/license",
+      "bytes": 114929,
+      "sha256": "0e73a897302ba61944f8aac1331bab2576f4a92f705ee8776234ac63f0ce5421"
+    },
+    {
+      "id": "oil",
+      "asset": "assets/images/catalog/oil.jpg",
+      "author": "Vladimir Gladkov",
+      "source": "Pexels",
+      "page": "https://www.pexels.com/photo/olive-oil-in-a-glass-bottle-6213754/",
+      "download": "https://images.pexels.com/photos/6213754/pexels-photo-6213754.jpeg?auto=compress&cs=tinysrgb&w=1000",
+      "license": "https://www.pexels.com/license/",
+      "bytes": 231992,
+      "sha256": "a2b425d06083dd477c4c4008a2fb7d7bfd508b11ad9d65ffcdbd87e9a330068c"
+    },
+    {
+      "id": "cocoa",
+      "asset": "assets/images/catalog/cocoa.jpg",
+      "author": "Loannes Marc",
+      "source": "Pexels",
+      "page": "https://www.pexels.com/photo/close-up-shot-of-cocoa-beans-4157754/",
+      "download": "https://images.pexels.com/photos/4157754/pexels-photo-4157754.jpeg?auto=compress&cs=tinysrgb&w=1000",
+      "license": "https://www.pexels.com/license/",
+      "bytes": 243565,
+      "sha256": "a53dcc4f8ac1fb7c919d9291b4e8813803bc3365d2c96002479427f6e6d88557"
+    },
+    {
+      "id": "fabric",
+      "asset": "assets/images/catalog/fabric.jpg",
+      "author": "Mo Squito",
+      "source": "Pexels",
+      "page": "https://www.pexels.com/photo/close-up-of-a-blue-textured-fabric-13876082/",
+      "download": "https://images.pexels.com/photos/13876082/pexels-photo-13876082.jpeg?auto=compress&cs=tinysrgb&w=1000",
+      "license": "https://www.pexels.com/license/",
+      "bytes": 232451,
+      "sha256": "0c2e0f2bfa049277698a5c04fa72e67696cf72f17d2abade6ab2a7536a5752f2"
+    },
+    {
+      "id": "workwear",
+      "asset": "assets/images/catalog/workwear.jpg",
+      "author": "Ali Babajahdi",
+      "source": "Pexels",
+      "page": "https://www.pexels.com/photo/jacket-on-hanger-16341730/",
+      "download": "https://images.pexels.com/photos/16341730/pexels-photo-16341730.jpeg?auto=compress&cs=tinysrgb&w=1000",
+      "license": "https://www.pexels.com/license/",
+      "bytes": 97656,
+      "sha256": "450036e6699f52171b3ea9c3b02d9102ce3879da511fa0169c7c8e69f879ba94"
+    },
+    {
+      "id": "solar",
+      "asset": "assets/images/catalog/solar.jpg",
+      "author": "Mark Stebnicki",
+      "source": "Pexels",
+      "page": "https://www.pexels.com/photo/close-up-of-solar-panels-15751136/",
+      "download": "https://images.pexels.com/photos/15751136/pexels-photo-15751136.jpeg?auto=compress&cs=tinysrgb&w=1000",
+      "license": "https://www.pexels.com/license/",
+      "bytes": 173571,
+      "sha256": "d73d466edb110eddf49f69a5ea0ba7d7348124ee6c4fda13b6097443d643a9e5"
+    },
+    {
+      "id": "chair",
+      "asset": "assets/images/catalog/chair.jpg",
+      "author": "Mike Murray",
+      "source": "Pexels",
+      "page": "https://www.pexels.com/photo/photo-of-a-black-office-chair-in-an-office-6446321/",
+      "download": "https://images.pexels.com/photos/6446321/pexels-photo-6446321.jpeg?auto=compress&cs=tinysrgb&w=1000",
+      "license": "https://www.pexels.com/license/",
+      "bytes": 187805,
+      "sha256": "7a0d8ea55b70bdf2064335e42523016b6485a7c96f4ad0383bea067c4ea1d928"
+    },
+    {
+      "id": "cartons",
+      "asset": "assets/images/catalog/cartons.jpg",
+      "author": "Ron Lach",
+      "source": "Pexels",
+      "page": "https://www.pexels.com/photo/brown-cardboard-boxes-on-yellow-surface-9594420/",
+      "download": "https://images.pexels.com/photos/9594420/pexels-photo-9594420.jpeg?auto=compress&cs=tinysrgb&w=1000",
+      "license": "https://www.pexels.com/license/",
+      "bytes": 45449,
+      "sha256": "8ec1ae41b0df1c171ecd194f5ecc52324d50cf017e7db4c7706b8396d71fa345"
+    },
+    {
+      "id": "warehouse",
+      "asset": "assets/images/catalog/warehouse.jpg",
+      "author": "Freek Wolsink",
+      "source": "Pexels",
+      "page": "https://www.pexels.com/photo/industrial-warehouse-with-stacked-cardboard-boxes-34221998/",
+      "download": "https://images.pexels.com/photos/34221998/pexels-photo-34221998.jpeg?auto=compress&cs=tinysrgb&w=1000",
+      "license": "https://www.pexels.com/license/",
+      "bytes": 116509,
+      "sha256": "a70ddb915f010f6820a7667b246a66279011b8ca74c25af4c848e796678b8403"
+    }
+  ]
+}

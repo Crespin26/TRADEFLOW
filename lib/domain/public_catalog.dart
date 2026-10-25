@@ -1,3 +1,5 @@
+import 'catalog_photos.dart';
+
 /// Public demonstration data only. No internal cost, stock count or partner data.
 enum PublicAvailability {
   available('Disponible'),
@@ -31,6 +33,7 @@ class PublicProduct {
   final PublicAvailability availability;
   final Map<String, String> specifications;
   final bool featured;
+  CatalogPhoto? get photo => catalogPhotos[id];
 }
 
 String normalizeCatalogText(String value) {

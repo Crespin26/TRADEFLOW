@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../domain/public_catalog.dart';
 import '../design_system/components.dart';
 import '../design_system/theme.dart';
+import 'catalog_photo.dart';
 
 String publicPrice(int amount) =>
     '${NumberFormat.decimalPattern('fr').format(amount)} F CFA';
@@ -19,78 +20,22 @@ IconData categoryIcon(String category) => switch (category) {
   _ => Icons.inventory_2_outlined,
 };
 
-class ProductIllustration extends StatelessWidget {
-  const ProductIllustration({
-    super.key,
-    required this.product,
-    this.variant = 0,
-    this.height = 160,
-  });
+class ProductThumbnail extends StatelessWidget {
+  const ProductThumbnail({super.key, required this.product});
   final PublicProduct product;
-  final int variant;
-  final double height;
   @override
-  Widget build(BuildContext context) {
-    final color = switch (product.category) {
-      'Alimentation' => const Color(0xFF407655),
-      'Textile' => const Color(0xFF5965A2),
-      'Équipement' => const Color(0xFF437C8F),
-      _ => const Color(0xFFA57543),
-    };
-    return Semantics(
-      label: 'Illustration de démonstration : ${product.name}',
-      image: true,
-      child: Container(
-        height: height,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              color.withValues(alpha: .08 + variant * .04),
-              color.withValues(alpha: .22),
-            ],
-          ),
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(
-              width: height * .65,
-              height: height * .65,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: .6),
-                borderRadius: BorderRadius.circular(variant == 1 ? 20 : height),
-              ),
-            ),
-            Icon(
-              switch (product.id) {
-                'oil' => Icons.water_drop_outlined,
-                'cocoa' => Icons.spa_outlined,
-                'solar' => Icons.solar_power_outlined,
-                'fabric' => Icons.texture,
-                _ => categoryIcon(product.category),
-              },
-              size: height * .38,
-              color: color,
-            ),
-            const Positioned(
-              bottom: 10,
-              right: 12,
-              child: Text(
-                'VISUEL DÉMO',
-                style: TextStyle(
-                  fontSize: 9,
-                  letterSpacing: 1.2,
-                  color: FlowColors.muted,
-                ),
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => SizedBox(
+    width: 64,
+    height: 64,
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: CatalogPhotoView(
+        photo: product.photo,
+        height: 64,
+        showCaption: false,
       ),
-    );
-  }
+    ),
+  );
 }
 
 class PublicProductTile extends StatelessWidget {
@@ -109,7 +54,7 @@ class PublicProductTile extends StatelessWidget {
       children: [
         InkWell(
           onTap: onOpen,
-          child: ProductIllustration(product: product),
+          child: CatalogPhotoView(photo: product.photo),
         ),
         Padding(
           padding: const EdgeInsets.all(16),

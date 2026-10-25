@@ -9,7 +9,7 @@ Au démarrage, TradeFlow affiche l’espace **visiteur**. Le catalogue et l’ac
 - L’icône palette ouvre le guide interactif des composants.
 - Pour retrouver les fonctions existantes : **Administrateur → Gestion → Ouvrir la gestion locale**.
 
-Les changements de profil ne créent pas de compte, ne modifient pas les données locales et sont réinitialisés au redémarrage. Ce mécanisme sert uniquement à valider les interfaces ; il devra être retiré de la distribution de production lorsque l’authentification sera implémentée. Aucune permission de sécurité ne doit reposer sur `DemoProfile`.
+Les changements de profil ne créent pas de compte, ne modifient pas les données locales et sont réinitialisés au redémarrage. Sans choix manuel d’un profil, une connexion simulée vérifiée affiche automatiquement l’espace client ; la déconnexion restaure un parcours public valide. Ce mécanisme sert uniquement à valider les interfaces ; il devra être retiré de la distribution de production lorsque l’authentification sera implémentée. Aucune permission de sécurité ne doit reposer sur `DemoProfile`.
 
 ## Identité visuelle
 

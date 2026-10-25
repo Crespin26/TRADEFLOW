@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'design_system/components.dart';
 import 'design_system/theme.dart';
+import '../domain/catalog_photos.dart';
+import 'catalog/catalog_photo.dart';
 
 class FoundationGallery extends StatefulWidget {
   const FoundationGallery({super.key});
@@ -152,11 +154,15 @@ class _FoundationGalleryState extends State<FoundationGallery> {
               ],
             ),
             heading('Carte produit publique'),
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: SizedBox(
                 width: 320,
                 child: FlowProductCard(
+                  image: CatalogPhotoView(
+                    photo: catalogPhotos['rice'],
+                    height: 140,
+                  ),
                   name: 'Riz parfumé · exemple fictif',
                   category: 'Produits alimentaires',
                   priceLabel: '18 500 F CFA',
