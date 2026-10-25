@@ -28,7 +28,7 @@ Les noms, prix, caractéristiques, disponibilités et coordonnées d’entrepris
 
 Les produits ne proviennent pas de Firebase et ne sont pas synchronisés avec la gestion locale. L’entreprise présentée est fictive et son adresse e-mail utilise le domaine réservé `.example`.
 
-Le panier, l’ajout au panier, la connexion et la confirmation de commande seront développés en phase 3. Les fiches annoncent cette étape sans proposer de fausse confirmation d’achat. Aucun paiement ni envoi de demande n’est réalisé.
+La phase 3 ajoute l’action Ajouter au panier, le panier sauvegardé localement et les parcours de connexion et commande simulés. Les articles en rupture ne sont pas ajoutables. Voir [CART_AND_AUTH_DEMO.md](CART_AND_AUTH_DEMO.md). Aucun paiement ni envoi de demande réel n’est réalisé.
 
 ## Fichiers
 

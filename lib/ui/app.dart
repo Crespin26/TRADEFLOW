@@ -8,6 +8,8 @@ import 'forms.dart';
 import 'design_system/theme.dart';
 import 'design_system/components.dart';
 import 'foundation_shell.dart';
+import '../domain/shopping_session.dart';
+import 'shopping/shopping_scope.dart';
 
 const ink = FlowColors.ink;
 const teal = FlowColors.primary;
@@ -18,18 +20,22 @@ String dateLabel(DateTime date) =>
     DateFormat('dd/MM/yyyy · HH:mm', 'fr').format(date.toLocal());
 
 class TradeFlowApp extends StatelessWidget {
-  const TradeFlowApp({super.key, required this.store});
+  const TradeFlowApp({super.key, required this.store, this.shoppingSession});
   final TradeStore store;
+  final ShoppingSession? shoppingSession;
   @override
-  Widget build(BuildContext context) => MaterialApp(
-    title: 'TradeFlow',
-    debugShowCheckedModeBanner: false,
-    locale: const Locale('fr'),
-    supportedLocales: const [Locale('fr')],
-    localizationsDelegates: GlobalMaterialLocalizations.delegates,
-    theme: buildTradeFlowTheme(),
-    home: FoundationShell(
-      managementBuilder: (_) => LocalManagementPage(store: store),
+  Widget build(BuildContext context) => ShoppingHost(
+    session: shoppingSession,
+    child: MaterialApp(
+      title: 'TradeFlow',
+      debugShowCheckedModeBanner: false,
+      locale: const Locale('fr'),
+      supportedLocales: const [Locale('fr')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      theme: buildTradeFlowTheme(),
+      home: FoundationShell(
+        managementBuilder: (_) => LocalManagementPage(store: store),
+      ),
     ),
   );
 }

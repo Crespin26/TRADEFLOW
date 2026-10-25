@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/trade_repository.dart';
+import 'data/public_cart_repository.dart';
+import 'domain/shopping_session.dart';
 import 'domain/trade_store.dart';
 import 'ui/app.dart';
 import 'ui/design_system/theme.dart';
@@ -12,7 +14,11 @@ Future<void> main() async {
   try {
     final preferences = await SharedPreferences.getInstance();
     final store = TradeStore(LocalTradeRepository(preferences));
-    runApp(TradeFlowApp(store: store));
+    final shopping = ShoppingSession(
+      repository: LocalPublicCartRepository(preferences),
+    );
+    await shopping.load();
+    runApp(TradeFlowApp(store: store, shoppingSession: shopping));
     await store.load();
   } catch (_) {
     runApp(

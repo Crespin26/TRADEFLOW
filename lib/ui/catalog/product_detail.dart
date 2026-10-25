@@ -4,6 +4,9 @@ import '../../domain/public_catalog.dart';
 import '../design_system/components.dart';
 import '../design_system/theme.dart';
 import 'product_widgets.dart';
+import '../shopping/shopping_scope.dart';
+import '../shopping/cart_page.dart';
+import '../forms.dart' show friendlyError;
 
 class ProductDetailPage extends StatefulWidget {
   const ProductDetailPage({super.key, required this.product});
@@ -14,11 +17,29 @@ class ProductDetailPage extends StatefulWidget {
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
   int visual = 0;
+  int quantity = 1;
   @override
   Widget build(BuildContext context) {
     final p = widget.product;
+    final shopping = ShoppingScope.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Fiche produit')),
+      appBar: AppBar(
+        title: const Text('Fiche produit'),
+        actions: [
+          IconButton(
+            tooltip: 'Voir mon panier',
+            icon: Badge(
+              isLabelVisible: shopping.itemCount > 0,
+              label: Text('${shopping.itemCount}'),
+              child: const Icon(Icons.shopping_bag_outlined),
+            ),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(builder: (_) => const CartPage()),
+            ),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Align(
           alignment: Alignment.topCenter,
@@ -104,11 +125,75 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         const SizedBox(height: 20),
                         Text(p.description),
                         const SizedBox(height: 24),
-                        const FlowStateView(
-                          title: 'Commande : prochaine étape',
-                          description: 'Le panier et le parcours de connexion seront disponibles en phase 3. Aucun achat ne peut être effectué dans cette démonstration.',
-                          icon: Icons.shopping_bag_outlined,
-                        ),
+                        if (p.availability == PublicAvailability.unavailable)
+                          const FlowStateView(
+                            title: 'Produit temporairement indisponible',
+                            description: 'Cet article ne peut pas être ajouté au panier.',
+                            icon: Icons.inventory_2_outlined,
+                          )
+                        else ...[
+                          Wrap(
+                            spacing: 8,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            children: [
+                              const Text('Quantité :'),
+                              IconButton(
+                                tooltip: 'Diminuer la quantité',
+                                onPressed: quantity <= 1
+                                    ? null
+                                    : () => setState(() => quantity--),
+                                icon: const Icon(Icons.remove_circle_outline),
+                              ),
+                              Text('$quantity'),
+                              IconButton(
+                                tooltip: 'Augmenter la quantité',
+                                onPressed: quantity >= 999
+                                    ? null
+                                    : () => setState(() => quantity++),
+                                icon: const Icon(Icons.add_circle_outline),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          FlowButton(
+                            label: 'Ajouter au panier',
+                            icon: Icons.add_shopping_cart,
+                            onPressed: shopping.busy || !shopping.ready
+                                ? null
+                                : () async {
+                                    try {
+                                      await shopping.add(
+                                        p.id,
+                                        quantity: quantity,
+                                      );
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  '${p.name} ajouté au panier.',
+                                                ),
+                                              ),
+                                            );
+                                      }
+                                    } catch (error) {
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(friendlyError(error)),
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  },
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'Démonstration : aucun stock réservé. Vous pourrez vous connecter au moment de confirmer.',
+                          ),
+                        ],
                       ],
                     );
                     if (constraints.maxWidth < 720) {

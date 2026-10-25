@@ -80,6 +80,11 @@ List<DemoDestination> destinationsFor(DemoProfile profile) => switch (profile) {
       'Découvrez les produits disponibles.',
     ),
     DemoDestination(
+      'Panier',
+      Icons.shopping_bag_outlined,
+      'Retrouvez votre sélection et préparez une commande simulée.',
+    ),
+    DemoDestination(
       'Commandes',
       Icons.local_shipping_outlined,
       'Consultez uniquement vos commandes et livraisons.',

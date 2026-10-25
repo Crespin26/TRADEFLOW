@@ -85,10 +85,12 @@ class FlowField extends StatelessWidget {
     this.inputFormatters,
     this.maxLength,
     this.hint,
+    this.obscureText = false,
   });
   final TextEditingController controller;
   final String label;
   final String? hint;
+  final bool obscureText;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
@@ -98,6 +100,7 @@ class FlowField extends StatelessWidget {
     controller: controller,
     decoration: InputDecoration(labelText: label, hintText: hint),
     validator: validator,
+    obscureText: obscureText,
     keyboardType: keyboardType,
     inputFormatters: inputFormatters,
     maxLength: maxLength,

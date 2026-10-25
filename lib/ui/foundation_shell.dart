@@ -6,6 +6,9 @@ import 'design_system/theme.dart';
 import 'foundation_gallery.dart';
 import 'catalog/catalog_page.dart';
 import 'catalog/public_home.dart';
+import 'shopping/shopping_scope.dart';
+import 'shopping/cart_page.dart';
+import 'shopping/account_page.dart';
 
 class FoundationShell extends StatefulWidget {
   const FoundationShell({super.key, required this.managementBuilder});
@@ -70,6 +73,7 @@ class _FoundationShellState extends State<FoundationShell> {
 
   @override
   Widget build(BuildContext context) {
+    final shopping = ShoppingScope.of(context);
     final destinations = destinationsFor(profile);
     final destination = destinations[selected];
     final wide = MediaQuery.sizeOf(context).width >= FlowLayout.railBreakpoint;
@@ -94,6 +98,14 @@ class _FoundationShellState extends State<FoundationShell> {
           ],
         ),
         actions: [
+          IconButton(
+            tooltip: 'Mon compte de démonstration',
+            icon: const Icon(Icons.person_outline),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(builder: (_) => const DemoAccountPage()),
+            ),
+          ),
           IconButton(
             tooltip: 'Guide des composants',
             icon: const Icon(Icons.palette_outlined),
@@ -134,8 +146,10 @@ class _FoundationShellState extends State<FoundationShell> {
                     'Démonstration · ${profile.label}',
                     style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
-                  const Text(
-                    'Authentification non connectée',
+                  Text(
+                    shopping.signedIn
+                        ? 'Session client simulée'
+                        : 'Authentification non connectée',
                     style: TextStyle(color: FlowColors.muted, fontSize: 12),
                   ),
                 ],
@@ -205,6 +219,14 @@ class _FoundationShellState extends State<FoundationShell> {
                                   selected = 1;
                                 }),
                               )
+                            else if (destination.label == 'Panier')
+                              CartContents(
+                                onBrowse: () => setState(() {
+                                  selected = 1;
+                                }),
+                              )
+                            else if (destination.label == 'Profil')
+                              const AccountContents()
                             else if (destination.label == 'Catalogue')
                               CatalogPage(
                                 key: ValueKey(
@@ -240,7 +262,7 @@ class _FoundationShellState extends State<FoundationShell> {
                               ),
                             const SizedBox(height: 24),
                             const Text(
-                              'Phase 2 · Catalogue public de démonstration',
+                              'Phase 3 · Panier et accès client simulés',
                               style: TextStyle(
                                 color: FlowColors.muted,
                                 fontSize: 12,
@@ -265,7 +287,13 @@ class _FoundationShellState extends State<FoundationShell> {
               destinations: [
                 for (final item in destinations)
                   NavigationDestination(
-                    icon: Icon(item.icon),
+                    icon: item.label == 'Panier'
+                        ? Badge(
+                            isLabelVisible: shopping.itemCount > 0,
+                            label: Text('${shopping.itemCount}'),
+                            child: Icon(item.icon),
+                          )
+                        : Icon(item.icon),
                     label: item.label,
                   ),
               ],

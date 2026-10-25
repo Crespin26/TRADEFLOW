@@ -58,3 +58,6 @@ app.*.map.json
 android/key.properties
 *.jks
 *.keystore
+
+# Local SDK selection belongs to each developer's machine
+/.vscode/settings.json

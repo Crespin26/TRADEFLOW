@@ -2,7 +2,7 @@
 
 ## Explorer l’application
 
-Au démarrage, TradeFlow affiche l’espace **visiteur**. Le catalogue et l’accueil publics ont été développés en phase 2 avec des données fictives. Le panier et les futurs espaces métier restent des emplacements de navigation explicitement marqués « interface à venir ».
+Au démarrage, TradeFlow affiche l’espace **visiteur**. Le catalogue et l’accueil publics ont été développés en phase 2 avec des données fictives. Le panier et les écrans d’accès client ont été développés en phase 3, en simulation. Les futurs espaces métier détaillés restent marqués « interface à venir ».
 
 - L’icône de changement de compte, en haut à droite, ouvre les six profils de démonstration.
 - Le bandeau indique toujours le profil simulé et l’absence d’authentification.
@@ -46,7 +46,7 @@ Les formulaires existants utilisent le champ et le bouton partagés. Le thème s
 | Profil | Destinations |
 |---|---|
 | Visiteur | Accueil, Catalogue, Panier |
-| Client | Accueil, Catalogue, Commandes, Profil |
+| Client | Accueil, Catalogue, Panier, Commandes, Profil |
 | Commercial | Activité, Clients, Devis, Commandes |
 | Magasinier | Activité, Stocks, Réceptions, Expéditions |
 | Comptable | Activité, Factures, Paiements, Échéances |
@@ -56,4 +56,4 @@ Le changement de profil revient à la première destination. La navigation et le
 
 ## Étape suivante
 
-La phase 2 est décrite dans [PUBLIC_CATALOG.md](PUBLIC_CATALOG.md). La prochaine étape est la phase 3 : panier à plusieurs lignes et parcours de connexion simulé. Le raccordement Firebase reste différé jusqu’à la validation des interfaces.
+La phase 2 est décrite dans [PUBLIC_CATALOG.md](PUBLIC_CATALOG.md). La phase 3 est documentée dans [CART_AND_AUTH_DEMO.md](CART_AND_AUTH_DEMO.md). La prochaine étape est la phase 4 : espace client détaillé. Le raccordement Firebase reste différé jusqu’à la validation des interfaces.

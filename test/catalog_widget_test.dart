@@ -38,7 +38,7 @@ void main() {
       expect(find.text('Réf. PUB-RIZ-025'), findsOneWidget);
       await tester.tap(find.text('Conditionnement'));
       await tester.pumpAndSettle();
-      expect(find.text('Commande : prochaine étape'), findsOneWidget);
+      expect(find.text('Ajouter au panier'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.tap(find.byType(BackButton));
       await tester.pumpAndSettle();
