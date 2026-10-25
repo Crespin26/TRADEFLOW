@@ -6,15 +6,15 @@ Application mobile de gestion commerciale internationale, construite avec Flutte
 
 TradeFlow centralise les produits, les stocks, les commandes et les partenaires commerciaux dans une interface en français. Cette version fonctionne localement, avec un accès client simulé et sans connexion Firebase.
 
-## Interfaces : phases 1, 2 et 3
+## Interfaces : phases 1 à 4
 
 L’application s’ouvre sur l’espace visiteur. Le sélecteur en haut à droite permet d’explorer six **profils de démonstration** : visiteur, client, commercial, magasinier, comptable et administrateur. Ces profils simulent la navigation ; ils ne sont pas une authentification et n’accordent aucune permission réelle.
 
-Le thème commun, les composants réutilisables et les états vide/chargement/erreur/succès sont consultables via l’icône palette. Le catalogue public propose désormais huit produits fictifs, des catégories, une recherche, des filtres combinables, un tri et des fiches détaillées. L’accueil présente une sélection et une entreprise fictive. Le panier à plusieurs lignes est sauvegardé localement. Les écrans de connexion, inscription, vérification d’e-mail, récupération et confirmation de commande sont simulés. Aucun compte ni achat réel n’est créé. Les autres espaces détaillés restent à venir, avant Firebase.
+Le thème commun, les composants réutilisables et les états vide/chargement/erreur/succès sont consultables via l’icône palette. Le catalogue public propose désormais huit produits fictifs, des catégories, une recherche, des filtres combinables, un tri et des fiches détaillées. L’accueil présente une sélection et une entreprise fictive. Le panier à plusieurs lignes est sauvegardé localement. Les écrans de connexion, inscription, vérification d’e-mail, récupération et confirmation de commande sont simulés. Aucun compte ni achat réel n’est créé. L’espace client comprend désormais commandes et suivi de livraison, profil, adresses, documents spécimens, demandes et notifications locales. Ses données restent temporaires ; les interfaces internes complètes et Firebase viennent ensuite.
 
 Pour retrouver les fonctionnalités locales existantes : **Administrateur → Gestion → Ouvrir la gestion locale**. Les exemples de produits se chargent depuis l’accueil de cette gestion, lorsque l’espace local est vide.
 
-Voir [docs/UI_FOUNDATIONS.md](docs/UI_FOUNDATIONS.md) pour les conventions, [docs/PUBLIC_CATALOG.md](docs/PUBLIC_CATALOG.md) pour le catalogue et [docs/CART_AND_AUTH_DEMO.md](docs/CART_AND_AUTH_DEMO.md) pour le panier et les parcours simulés. Les visuels produits sont des illustrations de démonstration, sans photographies ni données commerciales réelles.
+Voir [docs/UI_FOUNDATIONS.md](docs/UI_FOUNDATIONS.md) pour les conventions, [docs/PUBLIC_CATALOG.md](docs/PUBLIC_CATALOG.md) pour le catalogue et [docs/CART_AND_AUTH_DEMO.md](docs/CART_AND_AUTH_DEMO.md) pour le panier et les parcours simulés. La phase 4 est décrite dans [docs/CUSTOMER_SPACE_DEMO.md](docs/CUSTOMER_SPACE_DEMO.md). Les visuels produits sont des illustrations de démonstration, sans photographies ni données commerciales réelles.
 
 ## Fonctionnalités de gestion locale disponibles
 
@@ -96,6 +96,8 @@ lib/
   ui/foundation_gallery.dart   # Guide interactif des composants
   ui/catalog/                  # Accueil public, catalogue et fiches produit
   ui/shopping/                 # Panier, connexion et commande simulés
+  ui/customer/                 # Espace client de démonstration
+  domain/customer_models.dart  # Commandes, demandes, adresses et notifications client
   domain/shopping_session.dart # État du parcours public indépendant des stocks
   data/public_cart_repository.dart # Sauvegarde locale du panier public
   domain/public_catalog.dart   # Modèle public et données fictives indépendantes

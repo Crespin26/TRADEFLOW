@@ -189,6 +189,7 @@ Future<void> contactForm(BuildContext context, TradeStore store) async {
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: DropdownButtonFormField<ContactKind>(
+            isExpanded: true,
             initialValue: kind,
             decoration: const InputDecoration(labelText: 'Type de partenaire'),
             items: const [
@@ -249,6 +250,7 @@ Future<void> stockForm(
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: DropdownButtonFormField<int>(
+            isExpanded: true,
             initialValue: direction,
             decoration: const InputDecoration(labelText: 'Mouvement'),
             items: const [

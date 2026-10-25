@@ -9,6 +9,8 @@ import 'catalog/public_home.dart';
 import 'shopping/shopping_scope.dart';
 import 'shopping/cart_page.dart';
 import 'shopping/account_page.dart';
+import 'customer/customer_home.dart';
+import 'customer/customer_orders.dart';
 
 class FoundationShell extends StatefulWidget {
   const FoundationShell({super.key, required this.managementBuilder});
@@ -100,7 +102,11 @@ class _FoundationShellState extends State<FoundationShell> {
         actions: [
           IconButton(
             tooltip: 'Mon compte de démonstration',
-            icon: const Icon(Icons.person_outline),
+            icon: Badge(
+              isLabelVisible: shopping.unreadNoticeCount > 0,
+              label: Text('${shopping.unreadNoticeCount}'),
+              child: const Icon(Icons.person_outline),
+            ),
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute<void>(builder: (_) => const DemoAccountPage()),
@@ -219,6 +225,14 @@ class _FoundationShellState extends State<FoundationShell> {
                                   selected = 1;
                                 }),
                               )
+                            else if (profile == DemoProfile.client &&
+                                selected == 0)
+                              CustomerHome(
+                                onBrowse: () => setState(() => selected = 1),
+                              )
+                            else if (profile == DemoProfile.client &&
+                                destination.label == 'Commandes')
+                              const CustomerOrdersContents()
                             else if (destination.label == 'Panier')
                               CartContents(
                                 onBrowse: () => setState(() {
@@ -262,7 +276,7 @@ class _FoundationShellState extends State<FoundationShell> {
                               ),
                             const SizedBox(height: 24),
                             const Text(
-                              'Phase 3 · Panier et accès client simulés',
+                              'Phase 4 · Espace client de démonstration',
                               style: TextStyle(
                                 color: FlowColors.muted,
                                 fontSize: 12,

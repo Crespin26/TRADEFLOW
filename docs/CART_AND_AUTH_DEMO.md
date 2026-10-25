@@ -24,7 +24,7 @@ Le formulaire **Mot de passe oublié** présente une confirmation de demande sim
 - Les formulaires simulent une connexion : ils ne vérifient aucun identifiant auprès d’un service. N’utiliser que des données fictives.
 - Les mots de passe saisis ne sont ni enregistrés dans les préférences ni envoyés à un service.
 - La session de démonstration, l’adresse et les récapitulatifs restent en mémoire. Au redémarrage, une nouvelle connexion simulée sera nécessaire.
-- La déconnexion conserve le panier mais efface les récapitulatifs temporaires. Le changement d’adresse de connexion efface aussi ces récapitulatifs.
+- La déconnexion conserve le panier mais efface les récapitulatifs temporaires. Le changement d’identité de connexion efface aussi ces récapitulatifs et les données temporaires de l’espace client.
 - Une confirmation ne crée aucune commande interne, ne réserve aucun stock, ne prélève aucun paiement et ne déclenche aucune livraison.
 
 ## Sauvegarde locale
@@ -39,7 +39,7 @@ Si les données locales sont illisibles, elles ne sont pas écrasées silencieus
 
 - L’icône **Mon compte de démonstration**, en haut de l’application, permet de se connecter, vérifier une adresse fictive ou se déconnecter.
 - Le profil Client propose désormais Accueil, Catalogue, Panier, Commandes et Profil.
-- Les détails de commande persistants et l’espace personnel complet restent prévus en phase 4.
+- La phase 4 ajoute un espace client temporaire : historique et suivi des commandes de la session, profil, adresses, documents spécimens, demandes et notifications. La persistance distante reste différée. Voir [CUSTOMER_SPACE_DEMO.md](CUSTOMER_SPACE_DEMO.md).
 
 ## Fichiers
 

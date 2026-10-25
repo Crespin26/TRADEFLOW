@@ -6,6 +6,7 @@ import '../design_system/components.dart';
 import '../design_system/theme.dart';
 import '../forms.dart' show friendlyError, requiredText;
 import 'shopping_scope.dart';
+import '../customer/customer_orders.dart';
 
 class CheckoutPage extends StatefulWidget {
   const CheckoutPage({super.key});
@@ -27,6 +28,32 @@ class _CheckoutPageState extends State<CheckoutPage> {
       city = TextEditingController(),
       country = TextEditingController(text: 'Bénin');
   bool review = false, accepted = false, saving = false;
+  bool initializedAddress = false, rememberAddress = false;
+  String? selectedAddressId;
+  void applyAddress(DeliveryAddress value) {
+    name.text = value.name;
+    phone.text = value.phone;
+    street.text = value.street;
+    city.text = value.city;
+    country.text = value.country;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!initializedAddress) {
+      final session = ShoppingScope.of(context);
+      name.text = session.displayName;
+      phone.text = session.phone;
+      final saved = session.defaultDelivery;
+      if (saved != null) {
+        selectedAddressId = session.defaultDeliveryId;
+        applyAddress(saved);
+      }
+      initializedAddress = true;
+    }
+  }
+
   String? error;
   DeliveryAddress get address => DeliveryAddress(
     name: name.text.trim(),
@@ -51,7 +78,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
       error = null;
     });
     try {
-      final receipt = await ShoppingScope.of(context).confirmDemo(address);
+      final session = ShoppingScope.of(context);
+      final value = address;
+      final receipt = await session.confirmDemo(value);
+      if (rememberAddress &&
+          session.customerReady &&
+          session.email == receipt.email &&
+          !session.addresses.any((a) => a.address.label == value.label)) {
+        session.saveAddress(label: 'Livraison', address: value);
+      }
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -112,6 +147,41 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       'Utilisez une adresse et un numéro fictifs. Ils ne seront transmis à personne.',
                     ),
                     const SizedBox(height: 24),
+                    if (session.addresses.isNotEmpty) ...[
+                      DropdownButtonFormField<String>(
+                        key: ValueKey('delivery-$selectedAddressId'),
+                        initialValue: selectedAddressId ?? '',
+                        isExpanded: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Utiliser une adresse enregistrée',
+                        ),
+                        items: [
+                          const DropdownMenuItem(
+                            value: '',
+                            child: Text('Nouvelle adresse'),
+                          ),
+                          for (final saved in session.addresses)
+                            DropdownMenuItem(
+                              value: saved.id,
+                              child: Text(
+                                saved.label,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                        ],
+                        onChanged: (id) => setState(() {
+                          selectedAddressId = id == '' ? null : id;
+                          if (selectedAddressId != null) {
+                            applyAddress(
+                              session.addresses
+                                  .firstWhere((a) => a.id == selectedAddressId)
+                                  .address,
+                            );
+                          }
+                        }),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                     Form(
                       key: form,
                       child: Column(
@@ -138,6 +208,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         ],
                       ),
                     ),
+                    CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      value: rememberAddress,
+                      onChanged: (value) =>
+                          setState(() => rememberAddress = value ?? false),
+                      title: const Text(
+                        'Mémoriser cette adresse pour la session',
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                     FlowButton(
                       label: 'Voir le récapitulatif',
                       onPressed: () {
@@ -240,54 +320,83 @@ class DemoReceiptPage extends StatelessWidget {
   const DemoReceiptPage({super.key, required this.receipt});
   final DemoReceipt receipt;
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Confirmation de démonstration')),
-    body: SafeArea(
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 760),
-          child: ListView(
-            padding: const EdgeInsets.all(24),
-            children: [
-              const FlowStateView(
-                title: 'Parcours de commande terminé',
-                description: 'Votre commande fictive a été simulée. Aucun paiement, e-mail, mouvement de stock ni livraison n’a été déclenché.',
-                icon: Icons.check_circle_outline,
-                tone: FlowTone.success,
-              ),
-              const SizedBox(height: 24),
-              SelectableText(receipt.id),
-              const SizedBox(height: 12),
-              Text(receipt.email),
-              const SizedBox(height: 12),
-              Text(receipt.address.label),
-              const SizedBox(height: 20),
-              for (final line in receipt.lines)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Text(
-                    '${line.quantity} × ${line.product.name} · ${publicPrice(line.total)}',
+  Widget build(BuildContext context) {
+    final session = ShoppingScope.of(context);
+    if (!session.customerReady ||
+        session.email != receipt.email ||
+        session.customerOrder(receipt.id) == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Confirmation indisponible')),
+        body: const SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: FlowStateView(
+              title: 'Session client fermée',
+              description: 'Ce récapitulatif ne fait plus partie de la session actuelle.',
+            ),
+          ),
+        ),
+      );
+    }
+    return Scaffold(
+      appBar: AppBar(title: const Text('Confirmation de démonstration')),
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 760),
+            child: ListView(
+              padding: const EdgeInsets.all(24),
+              children: [
+                const FlowStateView(
+                  title: 'Parcours de commande terminé',
+                  description: 'Votre commande fictive a été simulée. Aucun paiement, e-mail, mouvement de stock ni livraison n’a été déclenché.',
+                  icon: Icons.check_circle_outline,
+                  tone: FlowTone.success,
+                ),
+                const SizedBox(height: 24),
+                SelectableText(receipt.id),
+                const SizedBox(height: 12),
+                Text(receipt.email),
+                const SizedBox(height: 12),
+                Text(receipt.address.label),
+                const SizedBox(height: 20),
+                for (final line in receipt.lines)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      '${line.quantity} × ${line.product.name} · ${publicPrice(line.total)}',
+                    ),
+                  ),
+                const SizedBox(height: 16),
+                Text(
+                  'Total des produits : ${publicPrice(receipt.total)}',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Le panier a été vidé après la confirmation. Ce récapitulatif reste temporaire et disparaît au redémarrage ou à la déconnexion.',
+                ),
+                const SizedBox(height: 24),
+                FlowButton(
+                  label: 'Voir mes commandes',
+                  onPressed: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (_) => const CustomerOrdersPage(),
+                    ),
                   ),
                 ),
-              const SizedBox(height: 16),
-              Text(
-                'Total des produits : ${publicPrice(receipt.total)}',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Le panier a été vidé après la confirmation. Ce récapitulatif reste temporaire et disparaît au redémarrage ou à la déconnexion.',
-              ),
-              const SizedBox(height: 24),
-              FlowButton(
-                label: 'Fermer le récapitulatif',
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
+                const SizedBox(height: 12),
+                FlowButton(
+                  label: 'Fermer le récapitulatif',
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

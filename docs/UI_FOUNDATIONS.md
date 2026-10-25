@@ -56,4 +56,4 @@ Le changement de profil revient à la première destination. La navigation et le
 
 ## Étape suivante
 
-La phase 2 est décrite dans [PUBLIC_CATALOG.md](PUBLIC_CATALOG.md). La phase 3 est documentée dans [CART_AND_AUTH_DEMO.md](CART_AND_AUTH_DEMO.md). La prochaine étape est la phase 4 : espace client détaillé. Le raccordement Firebase reste différé jusqu’à la validation des interfaces.
+La phase 2 est décrite dans [PUBLIC_CATALOG.md](PUBLIC_CATALOG.md). La phase 3 est documentée dans [CART_AND_AUTH_DEMO.md](CART_AND_AUTH_DEMO.md). La phase 4 est décrite dans [CUSTOMER_SPACE_DEMO.md](CUSTOMER_SPACE_DEMO.md). La prochaine étape est la phase 5 : gestion interne complète. Le raccordement Firebase reste différé jusqu’à la validation des interfaces.

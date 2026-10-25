@@ -64,6 +64,10 @@ void main() {
       ].asMap().entries) {
         await tester.enterText(addressFields.at(entry.key), entry.value);
       }
+      await tapVisible(
+        tester,
+        find.text('Mémoriser cette adresse pour la session'),
+      );
       await tapVisible(tester, find.text('Voir le récapitulatif'));
       expect(find.text('Récapitulatif'), findsOneWidget);
       await tapVisible(
@@ -74,6 +78,8 @@ void main() {
       expect(find.text('Parcours de commande terminé'), findsOneWidget);
       expect(session.lines, isEmpty);
       expect(session.receipts.single.total, 44500);
+      expect(session.addresses.single.address.city, 'Cotonou');
+      expect(session.customerOrders.single.id, session.receipts.single.id);
       expect(store.data.toJson(), internal);
       expect(tester.takeException(), isNull);
     });

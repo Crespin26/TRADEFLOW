@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../design_system/components.dart';
 import 'shopping_scope.dart';
 import 'auth_page.dart';
+import '../customer/customer_home.dart';
+import '../customer/customer_addresses.dart';
 
 class DemoAccountPage extends StatelessWidget {
   const DemoAccountPage({super.key});
@@ -65,6 +67,22 @@ class AccountContents extends StatelessWidget {
               ),
             ),
           ],
+          if (session.customerReady) ...[
+            const SizedBox(height: 12),
+            Text(
+              session.phone.isEmpty ? 'Téléphone non renseigné' : session.phone,
+            ),
+            const SizedBox(height: 16),
+            FlowButton(
+              label: 'Modifier mon profil',
+              secondary: true,
+              onPressed: session.busy
+                  ? null
+                  : () => showCustomerProfileForm(context),
+            ),
+            const SizedBox(height: 24),
+            const CustomerLinks(),
+          ],
           const SizedBox(height: 24),
           FlowButton(
             label: 'Déconnexion simulée',
@@ -75,7 +93,7 @@ class AccountContents extends StatelessWidget {
                     final confirmed = await showFlowConfirmation(
                       context,
                       title: 'Fermer la session de démonstration ?',
-                      description: 'Votre panier sera conservé. Les récapitulatifs temporaires seront effacés.',
+                      description: 'Votre panier sera conservé. L’espace client temporaire (commandes, adresses et demandes) sera effacé.',
                       confirmLabel: 'Se déconnecter',
                     );
                     if (confirmed && context.mounted) session.signOut();

@@ -10,6 +10,7 @@ TradeFlow est actuellement un prototype Flutter local, avec un catalogue fictif 
 | Phase 1 — Fondations | Disponible | Thème, composants, états d’écran, navigation adaptative, guide des composants et six profils de démonstration. |
 | Phase 2 — Catalogue public | Disponible avec données fictives | Accueil, huit produits, catégories, recherche, filtres, tri, fiches et présentation d’entreprise. |
 | Phase 3 — Panier et accès client | Disponible en simulation | Panier à plusieurs lignes, sauvegarde locale, connexion/inscription/vérification/récupération fictives, livraison, récapitulatif et confirmation. |
+| Phase 4 — Espace client | Disponible en simulation | Accueil personnel, commandes et suivi, profil, adresses, documents spécimens, demandes et notifications locales. |
 | Firebase | Préparation documentaire uniquement | Procédure de raccordement et règles de refus par défaut ; aucun service Firebase connecté. |
 
 Les commandes publiques simulées ne modifient pas le stock ni les commandes de la gestion interne. Le panier public conserve uniquement les identifiants des produits et leurs quantités. Les sessions, adresses et reçus simulés sont temporaires ; les mots de passe ne sont pas persistés.
@@ -47,18 +48,17 @@ Les autres développeurs doivent sélectionner leur propre SDK via **Flutter: Ch
 
 - Format Dart : conforme.
 - Analyse Flutter avec le SDK permanent : aucune anomalie signalée.
-- Tests : 39 scénarios réussis avec le SDK permanent.
+- Tests : 52 scénarios réussis avec le SDK permanent.
 - Racines de packages : 47 présentes, aucune temporaire.
 - Diff Git : aucune erreur d’espacement signalée.
 - Compilation Web de production : réussie avec le SDK permanent.
 
-Les tests couvrent notamment les règles de stock, l’annulation, la persistance, les échecs d’écriture, les recherches et filtres, les six profils, les petits/grands écrans et les parcours de connexion/commande simulés. Ils ne remplacent pas les essais sur appareils Android et iOS.
+Les tests couvrent notamment les règles de stock, l’annulation, la persistance, les échecs d’écriture, les recherches et filtres, les six profils, les petits/grands écrans et les parcours de connexion/commande simulés. La phase 4 ajoute des contrôles sur l’historique client, les demandes, les adresses par défaut, leurs instantanés, les notifications et les vues après déconnexion. Ils ne remplacent pas les essais sur appareils Android et iOS.
 
 ## Travail restant
 
 | Phase | Travail prévu |
 |---|---|
-| 4 — Espace client | Commandes personnelles détaillées, suivi de livraison, profil, adresses, documents et demandes. |
 | 5 — Gestion interne | Modification/publication/archivage, inventaires, entrepôts et fiches partenaires complètes. |
 | 6 — Opérations | Devis, achats, réceptions, livraisons partielles et retours. |
 | 7 — Finance et international | Factures, paiements simulés, devises, coûts et documents internationaux. |
@@ -68,10 +68,10 @@ Les tests couvrent notamment les règles de stock, l’annulation, la persistanc
 
 ## État avant le prochain commit/push
 
-Les commits existants couvrent la base et les phases 1 et 2. La phase 3, sa documentation et la correction de l’environnement IDE constituent le travail local à inclure dans le prochain commit.
+Les commits existants couvrent la base et les phases 1 à 3, dont le correctif de configuration IDE. Les compléments de la phase 3 (adresse réutilisable, liaison vers l’historique) et l’espace client de phase 4 constituent le travail local du prochain commit. Voir [CUSTOMER_SPACE_DEMO.md](CUSTOMER_SPACE_DEMO.md).
 
 Les réglages SDK personnels et les fichiers générés restent exclus. Les fichiers de configuration VS Code partageables peuvent être commités. Le push doit transmettre les sources et la documentation, sans les caches ni le dossier de compilation.
 
 ## Formulation pour expliquer le problème
 
-> Les erreurs affichées dans VS Code venaient d’une configuration locale des dépendances qui référençait un SDK Flutter et un cache temporaires. Les imports non résolus provoquaient une cascade de diagnostics. Les dépendances ont été régénérées avec l’installation permanente et le SDK de l’IDE a été configuré. L’analyse ne signale plus d’anomalie et les 39 tests passent ; un rechargement de VS Code permet de rafraîchir les diagnostics de l’éditeur.
+> Les erreurs affichées dans VS Code venaient d’une configuration locale des dépendances qui référençait un SDK Flutter et un cache temporaires. Les imports non résolus provoquaient une cascade de diagnostics. Les dépendances ont été régénérées avec l’installation permanente et le SDK de l’IDE a été configuré. L’analyse ne signale plus d’anomalie et les 52 tests passent ; un rechargement de VS Code permet de rafraîchir les diagnostics de l’éditeur.
