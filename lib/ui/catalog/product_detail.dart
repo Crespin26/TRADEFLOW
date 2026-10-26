@@ -1,3 +1,5 @@
+import 'catalog_scope.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../domain/public_catalog.dart';
@@ -10,8 +12,13 @@ import '../shopping/cart_page.dart';
 import '../forms.dart' show friendlyError;
 
 class ProductDetailPage extends StatefulWidget {
-  const ProductDetailPage({super.key, required this.product});
+  const ProductDetailPage({
+    super.key,
+    required this.product,
+    this.preview = false,
+  });
   final PublicProduct product;
+  final bool preview;
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
 }
@@ -20,7 +27,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   int quantity = 1;
   @override
   Widget build(BuildContext context) {
-    final p = widget.product;
+    final current = CatalogScope.productsOf(context)
+        .where((p) => p.id == widget.product.id)
+        .firstOrNull;
+    if (!widget.preview && current == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Fiche produit')),
+        body: const Center(
+          child: Text('Ce produit a été retiré du catalogue.'),
+        ),
+      );
+    }
+    final p = widget.preview ? widget.product : current!;
     final shopping = ShoppingScope.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -50,8 +68,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             child: ListView(
               padding: const EdgeInsets.all(24),
               children: [
-                const FlowBadge(
-                  'Référence fictive · Photographie illustrative',
+                FlowBadge(
+                  widget.preview
+                      ? 'Aperçu · Produit interne'
+                      : CatalogScope.maybeOf(context)?.managed == true
+                      ? 'Produit du catalogue local'
+                      : 'Référence fictive · Photographie illustrative',
                 ),
                 const SizedBox(height: 24),
                 LayoutBuilder(
@@ -67,6 +89,30 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             fit: BoxFit.contain,
                           ),
                         ),
+                        if (p.photos.length > 1)
+                          Wrap(
+                            spacing: 8,
+                            children: [
+                              for (final photo in p.photos)
+                                SizedBox(
+                                  width: 80,
+                                  child: InkWell(
+                                    onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute<void>(
+                                        builder: (_) =>
+                                            PhotoViewerPage(photo: photo),
+                                      ),
+                                    ),
+                                    child: CatalogPhotoView(
+                                      photo: photo,
+                                      height: 80,
+                                      showCaption: false,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
                         if (p.photo != null) ...[
                           const SizedBox(height: 12),
                           OutlinedButton.icon(
@@ -128,7 +174,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         const SizedBox(height: 20),
                         Text(p.description),
                         const SizedBox(height: 24),
-                        if (p.availability == PublicAvailability.unavailable)
+                        if (widget.preview)
+                          const Text(
+                            'Aperçu uniquement. Publiez le produit pour le rendre accessible dans le catalogue.',
+                          )
+                        else if (p.availability ==
+                            PublicAvailability.unavailable)
                           const FlowStateView(
                             title: 'Produit temporairement indisponible',
                             description: 'Cet article ne peut pas être ajouté au panier.',
@@ -256,8 +307,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'Les prix, disponibilités et caractéristiques présentés sont fictifs. Dans le service final, transport, taxes, délais et conditions de vente seront précisés avant toute confirmation.',
+                Text(
+                  CatalogScope.maybeOf(context)?.managed == true ||
+                          widget.preview
+                      ? 'Transport, taxes et délais sont à confirmer auprès de l’entreprise. Le parcours de commande reste simulé.'
+                      : 'Les prix, disponibilités et caractéristiques présentés sont fictifs. Dans le service final, transport, taxes, délais et conditions de vente seront précisés avant toute confirmation.',
                 ),
                 const SizedBox(height: 32),
                 Text(
@@ -266,7 +320,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ),
                 const SizedBox(height: 16),
                 PublicProductGrid(
-                  products: demoPublicProducts
+                  products: CatalogScope.productsOf(context)
                       .where(
                         (item) =>
                             item.id != p.id && item.category == p.category,

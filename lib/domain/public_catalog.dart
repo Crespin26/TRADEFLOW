@@ -27,13 +27,16 @@ class PublicProduct {
     required this.origin,
     required this.specifications,
     this.featured = false,
+    this.photos = const [],
   });
   final String id, name, sku, category, description, unit, origin;
   final int price;
   final PublicAvailability availability;
   final Map<String, String> specifications;
   final bool featured;
-  CatalogPhoto? get photo => catalogPhotos[id];
+  final List<CatalogPhoto> photos;
+  CatalogPhoto? get photo =>
+      photos.isNotEmpty ? photos.first : catalogPhotos[id];
 }
 
 String normalizeCatalogText(String value) {

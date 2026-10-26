@@ -17,9 +17,9 @@ Future<void> main() async {
     final shopping = ShoppingSession(
       repository: LocalPublicCartRepository(preferences),
     );
+    await store.load();
     await shopping.load();
     runApp(TradeFlowApp(store: store, shoppingSession: shopping));
-    await store.load();
   } catch (_) {
     runApp(
       MaterialApp(

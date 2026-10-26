@@ -41,3 +41,7 @@ La phase 3 ajoute l’action Ajouter au panier, le panier sauvegardé localement
 - `lib/domain/catalog_photos.dart` : association des références aux photographies et à leurs crédits.
 
 La grille utilise des cartes de hauteur libre pour rester lisible avec du texte agrandi. Le jeu de huit produits est affiché entièrement ; la pagination sera ajoutée avec une source distante ou un catalogue plus important.
+
+## Catalogue relié à la gestion locale
+
+Depuis le volet produits de la phase 5, la première publication remplace les huit exemples par les produits publiés localement. Les brouillons et archives restent internes. Le catalogue, les fiches et le panier suivent les modifications et retraits ; le choix persiste même lorsque tous les produits sont retirés. Voir [PRODUCTS_AND_CATALOG.md](PRODUCTS_AND_CATALOG.md).

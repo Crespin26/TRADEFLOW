@@ -244,7 +244,7 @@ companies/{companyId}/orders/{orderId}/documents/...
 companies/{companyId}/requests/{requestId}/attachments/...
 ```
 
-Développer le choix de fichier, l’envoi, la progression, les limites de taille/type et les erreurs. Les photos de produits publiées peuvent être rendues publiques selon la stratégie retenue ; les pièces justificatives et documents clients restent privés. Éviter des liens permanents partageables pour les documents confidentiels ; employer des accès contrôlés.
+Le choix de fichier, l’optimisation et la sauvegarde locale de trois photos par produit sont implémentés dans le volet [Produits et catalogue](PRODUCTS_AND_CATALOG.md). Pour Firebase, ajouter l’envoi, la progression, les règles Storage et la gestion des erreurs réseau ; remplacer les photos encodées dans la sauvegarde locale par des références Storage. Les photos de produits publiées peuvent être rendues publiques selon la stratégie retenue ; les pièces justificatives et documents clients restent privés. Éviter des liens permanents partageables pour les documents confidentiels ; employer des accès contrôlés.
 
 Les photos actuellement embarquées restent utilisables comme ressources illustratives. Pour les produits réels, téléverser les photographies autorisées de l’entreprise et enregistrer leurs références dans les données publiques.
 

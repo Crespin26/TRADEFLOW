@@ -145,38 +145,6 @@ class _SaveDialogState extends State<SaveDialog> {
   );
 }
 
-Future<void> productForm(BuildContext context, TradeStore store) async {
-  final name = TextEditingController(), sku = TextEditingController();
-  final quantity = TextEditingController(text: '0'),
-      threshold = TextEditingController(text: '5');
-  final price = TextEditingController();
-  await showEditor(
-    context: context,
-    builder: (context) => SaveDialog(
-      title: 'Nouveau produit',
-      description:
-          'Les prix sont exprimés en francs CFA (XOF), sans décimales.',
-      fields: [
-        field(name, 'Nom du produit'),
-        field(sku, 'Référence unique (SKU)'),
-        field(price, 'Prix unitaire (XOF)', numeric: true),
-        field(quantity, 'Stock initial', numeric: true),
-        field(threshold, 'Seuil d’alerte', numeric: true),
-      ],
-      save: () => store.addProduct(
-        name: name.text,
-        sku: sku.text,
-        quantity: int.parse(quantity.text),
-        threshold: int.parse(threshold.text),
-        price: int.parse(price.text),
-      ),
-    ),
-  );
-  for (final c in [name, sku, quantity, threshold, price]) {
-    c.dispose();
-  }
-}
-
 Future<void> contactForm(BuildContext context, TradeStore store) async {
   final name = TextEditingController(), country = TextEditingController();
   final email = TextEditingController(), phone = TextEditingController();
@@ -275,7 +243,9 @@ Future<void> stockForm(
 }
 
 Future<void> orderForm(BuildContext context, TradeStore store) async {
-  final products = store.data.products.where((p) => p.quantity > 0).toList();
+  final products = store.data.products
+      .where((p) => p.quantity > 0 && p.status != ProductStatus.archived)
+      .toList();
   final customers = store.data.contacts
       .where((c) => c.kind == ContactKind.client)
       .toList();

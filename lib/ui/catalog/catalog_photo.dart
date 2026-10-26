@@ -25,12 +25,7 @@ class CatalogPhotoView extends StatelessWidget {
         : Stack(
             fit: StackFit.expand,
             children: [
-              Image.asset(
-                photo!.asset,
-                fit: fit,
-                semanticLabel: photo!.description,
-                errorBuilder: (context, error, stack) => const _MissingPhoto(),
-              ),
+              photoImage(photo!, fit: fit),
               if (showCaption)
                 Positioned(
                   bottom: 10,
@@ -44,9 +39,11 @@ class CatalogPhotoView extends StatelessWidget {
                       color: Colors.black.withValues(alpha: .65),
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: const Text(
-                      'Photo illustrative',
-                      style: TextStyle(color: Colors.white, fontSize: 10),
+                    child: Text(
+                      photo!.isLocal
+                          ? 'Photo du produit'
+                          : 'Photo illustrative',
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
                     ),
                   ),
                 ),
@@ -89,12 +86,7 @@ class PhotoViewerPage extends StatelessWidget {
               child: InteractiveViewer(
                 minScale: 1,
                 maxScale: 4,
-                child: Image.asset(
-                  photo.asset,
-                  fit: BoxFit.contain,
-                  semanticLabel: photo.description,
-                  errorBuilder: (_, error, stack) => const _MissingPhoto(),
-                ),
+                child: photoImage(photo, fit: BoxFit.contain),
               ),
             ),
           ),
@@ -110,10 +102,11 @@ class PhotoViewerPage extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text('Photo : ${photo.author} · ${photo.source}'),
                 const SizedBox(height: 6),
-                const Text(
-                  'Photographie illustrative, sans garantie sur le modèle, l’origine ou le conditionnement de la référence fictive.',
-                  style: TextStyle(fontSize: 12, color: FlowColors.muted),
-                ),
+                if (!photo.isLocal)
+                  const Text(
+                    'Photographie illustrative, sans garantie sur le modèle, l’origine ou le conditionnement de la référence fictive.',
+                    style: TextStyle(fontSize: 12, color: FlowColors.muted),
+                  ),
               ],
             ),
           ),
@@ -184,3 +177,18 @@ class PhotoCreditsPage extends StatelessWidget {
     ),
   );
 }
+
+Widget photoImage(CatalogPhoto photo, {BoxFit fit = BoxFit.cover}) =>
+    photo.bytes != null
+    ? Image.memory(
+        photo.bytes!,
+        fit: fit,
+        semanticLabel: photo.description,
+        errorBuilder: (_, error, stack) => const _MissingPhoto(),
+      )
+    : Image.asset(
+        photo.asset,
+        fit: fit,
+        semanticLabel: photo.description,
+        errorBuilder: (_, error, stack) => const _MissingPhoto(),
+      );

@@ -1,3 +1,6 @@
+import 'products/product_editor.dart';
+import 'products/products_management.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
@@ -26,6 +29,7 @@ class TradeFlowApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ShoppingHost(
     session: shoppingSession,
+    store: store,
     child: MaterialApp(
       title: 'TradeFlow',
       debugShowCheckedModeBanner: false,
@@ -310,7 +314,7 @@ class _TradeShellState extends State<TradeShell> {
               onPressed: store.busy
                   ? null
                   : () => switch (page) {
-                      1 => productForm(context, store),
+                      1 => productEditor(context, store),
                       3 => contactForm(context, store),
                       _ => orderForm(context, store),
                     },
@@ -492,99 +496,7 @@ class _TradeShellState extends State<TradeShell> {
     ];
   }
 
-  List<Widget> products() {
-    final items = data.products
-        .where((p) => matches('${p.name} ${p.sku}'))
-        .toList();
-    return [
-      Text(
-        '${items.length} produit(s) · Prix unitaires en XOF',
-        style: const TextStyle(color: Colors.blueGrey),
-      ),
-      const SizedBox(height: 12),
-      if (items.isEmpty)
-        panel(
-          Icons.inventory_2_outlined,
-          'Aucun produit à afficher',
-          'Ajoutez un produit ou modifiez votre recherche.',
-        ),
-      for (final p in items)
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: teal.withValues(alpha: .08),
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Icon(
-                        Icons.inventory_2_outlined,
-                        color: teal,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            p.name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: ink,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            p.sku,
-                            style: const TextStyle(
-                              color: Colors.blueGrey,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    IconButton(
-                      tooltip: 'Ajuster le stock',
-                      onPressed: store.busy
-                          ? null
-                          : () => stockForm(context, store, p),
-                      icon: const Icon(Icons.tune_rounded),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Wrap(
-                  spacing: 16,
-                  runSpacing: 8,
-                  children: [
-                    Text(
-                      money(p.price),
-                      style: const TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                    pill(
-                      '${p.quantity} en stock',
-                      p.lowStock ? const Color(0xFFB96E14) : teal,
-                    ),
-                    Text(
-                      'Seuil : ${p.threshold}',
-                      style: const TextStyle(color: Colors.blueGrey),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-    ];
-  }
+  List<Widget> products() => [ProductsManagement(store: store, query: query)];
 
   List<Widget> orders() {
     final items = data.orders

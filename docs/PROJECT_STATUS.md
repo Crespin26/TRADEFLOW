@@ -2,7 +2,7 @@
 
 ## État du produit
 
-TradeFlow est actuellement un prototype Flutter local, avec un catalogue fictif et un parcours de commande simulé. Le développement suit l’ordre validé : interfaces et parcours d’abord, connexion aux services ensuite. La [recette des phases 1 à 4](ACCEPTANCE_PHASES_1_4.md) et les [crédits photographiques](PHOTO_CREDITS.md) présentent les derniers contrôles et ressources intégrées.
+TradeFlow est actuellement un prototype Flutter local, avec un catalogue d’exemple remplaçable par les produits publiés localement et un parcours de commande simulé. Le développement suit l’ordre validé : interfaces et parcours d’abord, connexion aux services ensuite. La [recette des phases 1 à 4](ACCEPTANCE_PHASES_1_4.md) et les [crédits photographiques](PHOTO_CREDITS.md) présentent les derniers contrôles et ressources intégrées.
 
 | Ensemble | État vérifié | Contenu |
 |---|---|---|
@@ -11,6 +11,7 @@ TradeFlow est actuellement un prototype Flutter local, avec un catalogue fictif 
 | Phase 2 — Catalogue public | Disponible avec données fictives | Accueil, huit produits, catégories, recherche, filtres, tri, fiches et présentation d’entreprise. |
 | Phase 3 — Panier et accès client | Disponible en simulation | Panier à plusieurs lignes, sauvegarde locale, connexion/inscription/vérification/récupération fictives, livraison, récapitulatif et confirmation. |
 | Phase 4 — Espace client | Disponible en simulation | Accueil personnel, commandes et suivi, profil, adresses, documents spécimens, demandes et notifications locales. |
+| Phase 5 — Produits et catalogue | Disponible localement | Modification, publication, archivage/restauration, catégories, unités et import de photos. Voir [PRODUCTS_AND_CATALOG.md](PRODUCTS_AND_CATALOG.md). |
 | Firebase | Préparation documentaire uniquement | Procédure de raccordement et règles de refus par défaut ; aucun service Firebase connecté. |
 
 Les commandes publiques simulées ne modifient pas le stock ni les commandes de la gestion interne. Le panier public conserve uniquement les identifiants des produits et leurs quantités. Les sessions, adresses et reçus simulés sont temporaires ; les mots de passe ne sont pas persistés.
@@ -27,7 +28,7 @@ Le fichier généré `.dart_tool/package_config.json` référençait des copies 
 
 - Dépendances régénérées avec le SDK permanent : `~/snap/flutter/common/flutter`.
 - Cache utilisateur permanent utilisé : `~/.pub-cache`.
-- Les 47 racines de packages sont présentes ; aucune ne pointe vers `/tmp`.
+- Les 62 racines de packages sont présentes ; aucune ne pointe vers `/tmp`.
 - Sélection du SDK ajoutée dans `.vscode/settings.json` pour cette machine, avec ajout du SDK au chemin des nouveaux terminaux intégrés.
 - `.vscode/settings.json` exclu de Git pour éviter d’imposer un chemin local aux autres développeurs.
 - Recommandations d’extensions Dart/Flutter et configuration de lancement Web ajoutées dans `.vscode/extensions.json` et `.vscode/launch.json`.
@@ -48,18 +49,18 @@ Les autres développeurs doivent sélectionner leur propre SDK via **Flutter: Ch
 
 - Format Dart : conforme.
 - Analyse Flutter avec le SDK permanent : aucune anomalie signalée.
-- Tests : 56 scénarios réussis avec le SDK permanent.
-- Racines de packages : 47 présentes, aucune temporaire.
+- Tests : 68 scénarios réussis avec le SDK permanent.
+- Racines de packages : 62 présentes, aucune temporaire.
 - Diff Git : aucune erreur d’espacement signalée.
 - Compilation Web de production : réussie avec le SDK permanent.
 
-Les tests couvrent notamment les règles de stock, l’annulation, la persistance, les échecs d’écriture, les recherches et filtres, les six profils, les petits/grands écrans et les parcours de connexion/commande simulés. La recette des quatre phases ajoute le décodage hors réseau des photos et la navigation entre sessions. La phase 4 ajoute des contrôles sur l’historique client, les demandes, les adresses par défaut, leurs instantanés, les notifications et les vues après déconnexion. Ils ne remplacent pas les essais sur appareils Android et iOS.
+Les tests couvrent notamment les règles de stock, l’annulation, la persistance, les échecs d’écriture, les recherches et filtres, les six profils, les petits/grands écrans et les parcours de connexion/commande simulés. La recette des quatre phases ajoute le décodage hors réseau des photos et la navigation entre sessions. La phase 4 ajoute des contrôles sur l’historique client, les demandes, les adresses par défaut, leurs instantanés, les notifications et les vues après déconnexion. Le volet produits ajoute la migration des anciennes sauvegardes, la persistance des photos importées, publication/archivage/restauration, catégories/unités et synchronisation du catalogue et du panier local. Ils ne remplacent pas les essais sur appareils Android et iOS.
 
 ## Travail restant
 
 | Phase | Travail prévu |
 |---|---|
-| 5 — Gestion interne | Modification/publication/archivage, inventaires, entrepôts et fiches partenaires complètes. |
+| 5 — Suite gestion interne | Inventaires, entrepôts, transferts et fiches partenaires complètes. Le volet produits/catalogue est implémenté localement. |
 | 6 — Opérations | Devis, achats, réceptions, livraisons partielles et retours. |
 | 7 — Finance et international | Factures, paiements simulés, devises, coûts et documents internationaux. |
 | 8 — Pilotage | Tableaux de bord métier, rapports, collaborateurs et paramètres. |
@@ -68,10 +69,10 @@ Les tests couvrent notamment les règles de stock, l’annulation, la persistanc
 
 ## État avant le prochain commit/push
 
-Les commits existants couvrent la base et les phases 1 à 3, dont le correctif de configuration IDE. Les quatre phases sont commitées. La recette transversale, les photographies locales et les corrections de navigation constituent le travail local du prochain commit. Voir [CUSTOMER_SPACE_DEMO.md](CUSTOMER_SPACE_DEMO.md).
+Le travail local à relire et commiter concerne le volet produits et catalogue de la phase 5 : [PRODUCTS_AND_CATALOG.md](PRODUCTS_AND_CATALOG.md). Aucun push n’est effectué dans cette étape.
 
 Les réglages SDK personnels et les fichiers générés restent exclus. Les fichiers de configuration VS Code partageables peuvent être commités. Le push doit transmettre les sources et la documentation, sans les caches ni le dossier de compilation.
 
 ## Formulation pour expliquer le problème
 
-> Les erreurs affichées dans VS Code venaient d’une configuration locale des dépendances qui référençait un SDK Flutter et un cache temporaires. Les imports non résolus provoquaient une cascade de diagnostics. Les dépendances ont été régénérées avec l’installation permanente et le SDK de l’IDE a été configuré. L’analyse ne signale plus d’anomalie et les 56 tests passent ; un rechargement de VS Code permet de rafraîchir les diagnostics de l’éditeur.
+> Les erreurs affichées dans VS Code venaient d’une configuration locale des dépendances qui référençait un SDK Flutter et un cache temporaires. Les imports non résolus provoquaient une cascade de diagnostics. Les dépendances ont été régénérées avec l’installation permanente et le SDK de l’IDE a été configuré. L’analyse ne signale plus d’anomalie et les 68 tests passent ; un rechargement de VS Code permet de rafraîchir les diagnostics de l’éditeur.

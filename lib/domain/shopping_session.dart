@@ -17,6 +17,19 @@ abstract interface class PublicCartRepository {
 class ShoppingSession extends ChangeNotifier {
   ShoppingSession({this.repository}) : ready = repository == null;
   final PublicCartRepository? repository;
+  List<PublicProduct> _products = demoPublicProducts;
+  void updateCatalog(List<PublicProduct> products, {bool notify = true}) {
+    _products = List.unmodifiable(products);
+    if (notify) notifyListeners();
+  }
+
+  List<String> get unavailableProductIds => _quantities.keys
+      .where(
+        (id) => !_products.any(
+          (p) => p.id == id && p.availability != PublicAvailability.unavailable,
+        ),
+      )
+      .toList();
   Map<String, int> _quantities = {};
   Map<String, int> get quantities => UnmodifiableMapView(_quantities);
   bool ready, busy = false;
@@ -29,7 +42,7 @@ class ShoppingSession extends ChangeNotifier {
   List<DemoReceipt> get receipts =>
       customerReady ? List.unmodifiable(_receipts) : const [];
   List<CartLine> get lines => [
-    for (final p in demoPublicProducts)
+    for (final p in _products)
       if (_quantities.containsKey(p.id)) CartLine(p, _quantities[p.id]!),
   ];
   int get itemCount => _quantities.values.fold(0, (a, b) => a + b);
@@ -299,12 +312,7 @@ class ShoppingSession extends ChangeNotifier {
     try {
       final values = await repository?.load() ?? <String, int>{};
       for (final entry in values.entries) {
-        final known = demoPublicProducts.where(
-          (p) =>
-              p.id == entry.key &&
-              p.availability != PublicAvailability.unavailable,
-        );
-        if (known.isEmpty || entry.value < 1 || entry.value > 999) {
+        if (entry.key.isEmpty || entry.value < 1 || entry.value > 999) {
           throw const FormatException('Panier invalide');
         }
       }
@@ -339,7 +347,10 @@ class ShoppingSession extends ChangeNotifier {
   }
 
   Future<void> add(String id, {int quantity = 1}) async {
-    final product = demoPublicProducts.firstWhere((p) => p.id == id);
+    final product = _products.where((p) => p.id == id).firstOrNull;
+    if (product == null) {
+      throw ArgumentError('Ce produit a été retiré du catalogue.');
+    }
     if (product.availability == PublicAvailability.unavailable) {
       throw ArgumentError('Ce produit est en rupture.');
     }
@@ -396,6 +407,11 @@ class ShoppingSession extends ChangeNotifier {
     }
     if (!address.complete) {
       throw ArgumentError('Complétez l’adresse de livraison.');
+    }
+    if (unavailableProductIds.isNotEmpty) {
+      throw StateError(
+        'Retirez les produits indisponibles avant de confirmer.',
+      );
     }
     if (lines.isEmpty) throw StateError('Votre panier est vide.');
     final receipt = DemoReceipt(

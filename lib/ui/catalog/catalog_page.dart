@@ -1,3 +1,5 @@
+import 'catalog_scope.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../domain/public_catalog.dart';
@@ -40,10 +42,31 @@ class _CatalogPageState extends State<CatalogPage> {
   });
   @override
   Widget build(BuildContext context) {
+    final catalog = CatalogScope.maybeOf(context);
+    if (catalog?.store.loadError != null) {
+      return FlowStateView(
+        title: 'Catalogue indisponible',
+        description: 'Les données locales ne peuvent pas être lues.',
+        icon: Icons.cloud_off_outlined,
+        actionLabel: 'Réessayer',
+        onAction: catalog!.store.busy ? null : catalog.store.load,
+      );
+    }
+    if (catalog?.managed == true && catalog!.products.isEmpty) {
+      return const FlowStateView(
+        title: 'Aucun produit publié',
+        description:
+            'L’entreprise n’a actuellement aucun produit dans son catalogue.',
+        icon: Icons.inventory_2_outlined,
+      );
+    }
     final products = selectPublicProducts(
-      demoPublicProducts,
+      CatalogScope.productsOf(context),
       query: search.text,
-      category: category,
+      category:
+          CatalogScope.productsOf(context).any((p) => p.category == category)
+          ? category
+          : null,
       availability: availability,
       price: price,
       sort: sort,
@@ -51,7 +74,11 @@ class _CatalogPageState extends State<CatalogPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const FlowBadge('Catalogue fictif · Prix indicatifs'),
+        FlowBadge(
+          CatalogScope.maybeOf(context)?.managed == true
+              ? 'Catalogue local · Produits publiés'
+              : 'Catalogue fictif · Prix indicatifs',
+        ),
         const SizedBox(height: 20),
         TextField(
           controller: search,
@@ -79,8 +106,9 @@ class _CatalogPageState extends State<CatalogPage> {
               selected: category == null,
               onSelected: (_) => setState(() => category = null),
             ),
-            for (final value
-                in demoPublicProducts.map((p) => p.category).toSet())
+            for (final value in CatalogScope.productsOf(
+              context,
+            ).map((p) => p.category).toSet())
               ChoiceChip(
                 label: Text(value),
                 selected: category == value,

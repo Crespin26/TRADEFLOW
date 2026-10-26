@@ -55,7 +55,7 @@ class CartContents extends StatelessWidget {
     if (!context.mounted ||
         !session.signedIn ||
         !session.verified ||
-        session.lines.isEmpty) {
+        session.quantities.isEmpty) {
       return;
     }
     await Navigator.push<void>(
@@ -96,7 +96,7 @@ class CartContents extends StatelessWidget {
         ],
       );
     }
-    if (session.lines.isEmpty) {
+    if (session.quantities.isEmpty) {
       return FlowStateView(
         title: 'Votre panier est vide',
         description: 'Découvrez le catalogue et ajoutez les produits qui vous intéressent.',
@@ -114,6 +114,20 @@ class CartContents extends StatelessWidget {
           'Les quantités ne réservent aucun stock. Les prix sont indicatifs et aucun achat réel n’est effectué.',
         ),
         const SizedBox(height: 20),
+        for (final id in session.unavailableProductIds)
+          Card(
+            child: ListTile(
+              title: const Text('Produit indisponible ou retiré'),
+              subtitle: Text('Référence : $id'),
+              trailing: IconButton(
+                tooltip: 'Retirer le produit indisponible',
+                icon: const Icon(Icons.delete_outline),
+                onPressed: session.busy
+                    ? null
+                    : () => act(context, () => session.remove(id)),
+              ),
+            ),
+          ),
         for (final line in session.lines)
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
@@ -230,7 +244,10 @@ class CartContents extends StatelessWidget {
                       ? 'Préparer la commande'
                       : 'Se connecter pour continuer',
                   icon: Icons.arrow_forward,
-                  onPressed: session.busy ? null : () => checkout(context),
+                  onPressed:
+                      session.busy || session.unavailableProductIds.isNotEmpty
+                      ? null
+                      : () => checkout(context),
                 ),
                 TextButton(
                   onPressed: onBrowse,

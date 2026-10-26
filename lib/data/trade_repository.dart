@@ -25,10 +25,13 @@ class LocalTradeRepository implements TradeRepository {
 
   @override
   Future<void> save(TradeData data) async {
-    final success = await preferences.setString(
-      storageKey,
-      jsonEncode(data.toJson()),
-    );
+    final encoded = jsonEncode(data.toJson());
+    if (utf8.encode(encoded).length > 4000000) {
+      throw StateError(
+        'Sauvegarde locale trop volumineuse (4 Mo maximum). Retirez des photos inutilisées.',
+      );
+    }
+    final success = await preferences.setString(storageKey, encoded);
     if (!success) throw StateError('La sauvegarde locale a échoué.');
   }
 }

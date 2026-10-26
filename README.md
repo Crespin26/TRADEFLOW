@@ -10,9 +10,11 @@ TradeFlow centralise les produits, les stocks, les commandes et les partenaires 
 
 L’application s’ouvre sur l’espace visiteur. Le sélecteur en haut à droite permet d’explorer six **profils de démonstration** : visiteur, client, commercial, magasinier, comptable et administrateur. Ces profils simulent la navigation ; ils ne sont pas une authentification et n’accordent aucune permission réelle.
 
-Le thème commun, les composants réutilisables et les états vide/chargement/erreur/succès sont consultables via l’icône palette. Le catalogue public propose désormais huit produits fictifs, des catégories, une recherche, des filtres combinables, un tri et des fiches détaillées. L’accueil présente une sélection et une entreprise fictive. Le panier à plusieurs lignes est sauvegardé localement. Les écrans de connexion, inscription, vérification d’e-mail, récupération et confirmation de commande sont simulés. Aucun compte ni achat réel n’est créé. L’espace client comprend désormais commandes et suivi de livraison, profil, adresses, documents spécimens, demandes et notifications locales. Ses données restent temporaires ; les interfaces internes complètes et Firebase viennent ensuite.
+Le thème commun, les composants réutilisables et les états vide/chargement/erreur/succès sont consultables via l’icône palette. Le catalogue public propose désormais huit produits fictifs, des catégories, une recherche, des filtres combinables, un tri et des fiches détaillées. L’accueil présente une sélection et une entreprise fictive. Le panier à plusieurs lignes est sauvegardé localement. Les écrans de connexion, inscription, vérification d’e-mail, récupération et confirmation de commande sont simulés. Aucun compte ni achat réel n’est créé. L’espace client comprend désormais commandes et suivi de livraison, profil, adresses, documents spécimens, demandes et notifications locales. Ses données restent temporaires. Le volet produits de la phase 5 permet désormais modification, publication, archivage, catégories, unités et import de photos ; seuls les produits publiés alimentent le catalogue local après la première publication. Firebase vient ensuite.
 
 Pour retrouver les fonctionnalités locales existantes : **Administrateur → Gestion → Ouvrir la gestion locale**. Les exemples de produits se chargent depuis l’accueil de cette gestion, lorsque l’espace local est vide.
+
+La [phase 5 — Produits et catalogue](docs/PRODUCTS_AND_CATALOG.md) détaille les parcours, la migration des données et les limites du stockage local.
 
 Voir [docs/UI_FOUNDATIONS.md](docs/UI_FOUNDATIONS.md) pour les conventions, [docs/PUBLIC_CATALOG.md](docs/PUBLIC_CATALOG.md) pour le catalogue et [docs/CART_AND_AUTH_DEMO.md](docs/CART_AND_AUTH_DEMO.md) pour le panier et les parcours simulés. La phase 4 est décrite dans [docs/CUSTOMER_SPACE_DEMO.md](docs/CUSTOMER_SPACE_DEMO.md). Les produits utilisent désormais de vraies photographies illustratives, embarquées dans l’application ; les références et prix restent fictifs. Les [crédits photographiques](docs/PHOTO_CREDITS.md) et la [recette des phases 1 à 4](docs/ACCEPTANCE_PHASES_1_4.md) détaillent cette mise à jour.
 
@@ -100,7 +102,8 @@ lib/
   domain/customer_models.dart  # Commandes, demandes, adresses et notifications client
   domain/shopping_session.dart # État du parcours public indépendant des stocks
   data/public_cart_repository.dart # Sauvegarde locale du panier public
-  domain/public_catalog.dart   # Modèle public et données fictives indépendantes
+  domain/public_catalog.dart   # Modèle public, filtres et exemples
+  domain/product_catalog.dart  # Projection des produits publiés
 firebase/                      # Règles de refus par défaut
 test/                         # Tests métier, persistance et interface
 ```

@@ -1,6 +1,7 @@
+import 'catalog_scope.dart';
+
 import 'package:flutter/material.dart';
 
-import '../../domain/public_catalog.dart';
 import '../design_system/components.dart';
 import '../design_system/theme.dart';
 import 'product_detail.dart';
@@ -61,8 +62,10 @@ class PublicHome extends StatelessWidget {
         ),
       ),
       const SizedBox(height: 16),
-      const Text(
-        'Catalogue fictif · Photographies illustratives · Prix indicatifs.',
+      Text(
+        CatalogScope.maybeOf(context)?.managed == true
+            ? 'Catalogue local · Produits publiés par l’entreprise.'
+            : 'Catalogue fictif · Photographies illustratives · Prix indicatifs.',
         style: TextStyle(fontSize: 12, color: FlowColors.muted),
       ),
       const SizedBox(height: 28),
@@ -75,8 +78,9 @@ class PublicHome extends StatelessWidget {
         spacing: 12,
         runSpacing: 12,
         children: [
-          for (final category
-              in demoPublicProducts.map((p) => p.category).toSet())
+          for (final category in CatalogScope.productsOf(
+            context,
+          ).map((p) => p.category).toSet())
             OutlinedButton.icon(
               onPressed: () => onCatalog(category),
               icon: Icon(categoryIcon(category)),
@@ -92,8 +96,16 @@ class PublicHome extends StatelessWidget {
         style: TextStyle(color: FlowColors.muted),
       ),
       const SizedBox(height: 16),
+      if (CatalogScope.maybeOf(context)?.managed == true &&
+          CatalogScope.productsOf(context).isEmpty)
+        const Text('Aucun produit publié pour le moment.'),
       PublicProductGrid(
-        products: demoPublicProducts.where((p) => p.featured).take(4).toList(),
+        products:
+            (CatalogScope.productsOf(context).any((p) => p.featured)
+                    ? CatalogScope.productsOf(context).where((p) => p.featured)
+                    : CatalogScope.productsOf(context))
+                .take(4)
+                .toList(),
         onOpen: (p) => Navigator.push(
           context,
           MaterialPageRoute<void>(

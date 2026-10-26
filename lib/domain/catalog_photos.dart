@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 class CatalogPhoto {
   const CatalogPhoto({
     required this.asset,
+    this.bytes,
     required this.description,
     required this.author,
     required this.source,
@@ -8,6 +12,28 @@ class CatalogPhoto {
     required this.licenseUrl,
   });
   final String asset, description, author, source, sourceUrl, licenseUrl;
+  final Uint8List? bytes;
+  bool get isLocal => bytes != null;
+  Map<String, dynamic> toJson() => {
+    'asset': asset,
+    'description': description,
+    'author': author,
+    'source': source,
+    'sourceUrl': sourceUrl,
+    'licenseUrl': licenseUrl,
+    if (bytes != null) 'bytes': base64Encode(bytes!),
+  };
+  factory CatalogPhoto.fromJson(Map<String, dynamic> j) => CatalogPhoto(
+    asset: j['asset'] as String,
+    description: j['description'] as String,
+    author: j['author'] as String,
+    source: j['source'] as String,
+    sourceUrl: j['sourceUrl'] as String,
+    licenseUrl: j['licenseUrl'] as String,
+    bytes: j['bytes'] == null
+        ? null
+        : base64Decode(j['bytes'] as String).asUnmodifiableView(),
+  );
 }
 
 const catalogPhotos = <String, CatalogPhoto>{
