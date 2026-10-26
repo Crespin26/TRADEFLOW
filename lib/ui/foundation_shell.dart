@@ -13,8 +13,15 @@ import 'customer/customer_home.dart';
 import 'customer/customer_orders.dart';
 
 class FoundationShell extends StatefulWidget {
-  const FoundationShell({super.key, required this.managementBuilder});
+  const FoundationShell({
+    super.key,
+    required this.managementBuilder,
+    this.stockBuilder,
+    this.partnersBuilder,
+  });
   final WidgetBuilder managementBuilder;
+  final WidgetBuilder? stockBuilder;
+  final WidgetBuilder? partnersBuilder;
   @override
   State<FoundationShell> createState() => _FoundationShellState();
 }
@@ -249,6 +256,36 @@ class _FoundationShellState extends State<FoundationShell> {
                             else if (activeProfile == DemoProfile.client &&
                                 destination.label == 'Commandes')
                               const CustomerOrdersContents()
+                            else if (activeProfile == DemoProfile.warehouse &&
+                                destination.label == 'Stocks' &&
+                                widget.stockBuilder != null)
+                              FlowStateView(
+                                title: 'Stocks et inventaires locaux',
+                                description: 'Consultez les disponibilités, enregistrez les entrées et sorties, puis validez vos comptages physiques.',
+                                icon: Icons.warehouse_outlined,
+                                actionLabel: 'Ouvrir les stocks',
+                                onAction: () => Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: widget.stockBuilder!,
+                                  ),
+                                ),
+                              )
+                            else if (activeProfile == DemoProfile.sales &&
+                                destination.label == 'Clients' &&
+                                widget.partnersBuilder != null)
+                              FlowStateView(
+                                title: 'Clients et fournisseurs locaux',
+                                description: 'Consultez et complétez les fiches partenaires, leurs coordonnées et leurs commandes internes.',
+                                icon: Icons.people_outline,
+                                actionLabel: 'Ouvrir les partenaires',
+                                onAction: () => Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: widget.partnersBuilder!,
+                                  ),
+                                ),
+                              )
                             else if (destination.label == 'Panier')
                               CartContents(
                                 onBrowse: () => setState(() {

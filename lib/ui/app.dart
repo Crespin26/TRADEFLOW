@@ -1,3 +1,6 @@
+import 'partners/partner_editor.dart';
+import 'partners/partners_page.dart';
+import 'stock/stock_page.dart';
 import 'products/product_editor.dart';
 import 'products/products_management.dart';
 
@@ -38,6 +41,9 @@ class TradeFlowApp extends StatelessWidget {
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       theme: buildTradeFlowTheme(),
       home: FoundationShell(
+        stockBuilder: (_) => StockPage(store: store),
+        partnersBuilder: (_) =>
+            PartnersPage(store: store, initialKind: ContactKind.client),
         managementBuilder: (_) => LocalManagementPage(store: store),
       ),
     ),
@@ -98,7 +104,6 @@ class TradeShell extends StatefulWidget {
 class _TradeShellState extends State<TradeShell> {
   int page = 0;
   String query = '';
-  ContactKind? kind;
   OrderStatus? status;
   final search = TextEditingController();
   TradeStore get store => widget.store;
@@ -166,13 +171,28 @@ class _TradeShellState extends State<TradeShell> {
               child: const Icon(Icons.swap_calls_rounded, color: Colors.white),
             ),
             const SizedBox(width: 10),
-            const Text(
-              'TradeFlow',
-              style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: -.7),
+            const Flexible(
+              child: Text(
+                'TradeFlow',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -.7,
+                ),
+              ),
             ),
           ],
         ),
         actions: [
+          IconButton(
+            tooltip: 'Gérer les stocks',
+            icon: const Icon(Icons.warehouse_outlined),
+            onPressed: () => Navigator.push<void>(
+              context,
+              MaterialPageRoute(builder: (_) => StockPage(store: store)),
+            ),
+          ),
           IconButton(
             tooltip: 'Alertes de stock',
             onPressed: () => showAlerts(context, low),
@@ -315,7 +335,7 @@ class _TradeShellState extends State<TradeShell> {
                   ? null
                   : () => switch (page) {
                       1 => productEditor(context, store),
-                      3 => contactForm(context, store),
+                      3 => partnerEditor(context, store),
                       _ => orderForm(context, store),
                     },
               icon: const Icon(Icons.add),
@@ -656,87 +676,7 @@ class _TradeShellState extends State<TradeShell> {
     ),
   );
 
-  List<Widget> contacts() {
-    final items = data.contacts
-        .where(
-          (c) =>
-              (kind == null || kind == c.kind) &&
-              matches('${c.name} ${c.country} ${c.email} ${c.phone}'),
-        )
-        .toList();
-    return [
-      Wrap(
-        spacing: 8,
-        children: [
-          ChoiceChip(
-            label: const Text('Tous'),
-            selected: kind == null,
-            onSelected: (_) => setState(() => kind = null),
-          ),
-          ChoiceChip(
-            label: const Text('Clients'),
-            selected: kind == ContactKind.client,
-            onSelected: (_) => setState(() => kind = ContactKind.client),
-          ),
-          ChoiceChip(
-            label: const Text('Fournisseurs'),
-            selected: kind == ContactKind.supplier,
-            onSelected: (_) => setState(() => kind = ContactKind.supplier),
-          ),
-        ],
-      ),
-      const SizedBox(height: 12),
-      if (items.isEmpty)
-        panel(
-          Icons.people_outline,
-          'Aucun partenaire à afficher',
-          'Centralisez ici vos clients et fournisseurs.',
-        ),
-      for (final c in items)
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: teal.withValues(alpha: .08),
-                      child: Icon(
-                        c.kind == ContactKind.client
-                            ? Icons.person_outline
-                            : Icons.business_outlined,
-                        color: teal,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        c.name,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: ink,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                pill(
-                  c.kind == ContactKind.client ? 'Client' : 'Fournisseur',
-                  teal,
-                ),
-                const SizedBox(height: 8),
-                Text(c.country),
-                if (c.email.isNotEmpty) SelectableText(c.email),
-                if (c.phone.isNotEmpty) SelectableText(c.phone),
-              ],
-            ),
-          ),
-        ),
-    ];
-  }
+  List<Widget> contacts() => [ContactsManagement(store: store, query: query)];
 
   List<Widget> movements() {
     final items = data.movements

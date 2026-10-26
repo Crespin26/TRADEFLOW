@@ -71,11 +71,13 @@ class SaveDialog extends StatefulWidget {
     required this.fields,
     required this.save,
     this.description,
+    this.confirm,
   });
   final String title;
   final String? description;
   final List<Widget> fields;
   final Future<void> Function() save;
+  final Future<bool> Function()? confirm;
   @override
   State<SaveDialog> createState() => _SaveDialogState();
 }
@@ -91,6 +93,10 @@ class _SaveDialogState extends State<SaveDialog> {
       error = null;
     });
     try {
+      if (widget.confirm != null && !await widget.confirm!()) {
+        if (mounted) setState(() => saving = false);
+        return;
+      }
       await widget.save();
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
@@ -145,96 +151,84 @@ class _SaveDialogState extends State<SaveDialog> {
   );
 }
 
-Future<void> contactForm(BuildContext context, TradeStore store) async {
-  final name = TextEditingController(), country = TextEditingController();
-  final email = TextEditingController(), phone = TextEditingController();
-  var kind = ContactKind.client;
-  await showEditor(
-    context: context,
-    builder: (context) => SaveDialog(
-      title: 'Nouveau partenaire',
-      fields: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: DropdownButtonFormField<ContactKind>(
-            isExpanded: true,
-            initialValue: kind,
-            decoration: const InputDecoration(labelText: 'Type de partenaire'),
-            items: const [
-              DropdownMenuItem(
-                value: ContactKind.client,
-                child: Text('Client'),
-              ),
-              DropdownMenuItem(
-                value: ContactKind.supplier,
-                child: Text('Fournisseur'),
-              ),
-            ],
-            onChanged: (v) => kind = v!,
-          ),
-        ),
-        field(name, 'Nom / raison sociale'),
-        field(country, 'Pays'),
-        field(
-          email,
-          'E-mail (facultatif)',
-          keyboard: TextInputType.emailAddress,
-          required: false,
-        ),
-        field(
-          phone,
-          'Téléphone (facultatif)',
-          keyboard: TextInputType.phone,
-          required: false,
-        ),
-      ],
-      save: () => store.addContact(
-        name: name.text,
-        kind: kind,
-        country: country.text,
-        email: email.text,
-        phone: phone.text,
-      ),
-    ),
-  );
-  for (final c in [name, country, email, phone]) {
-    c.dispose();
-  }
-}
-
 Future<void> stockForm(
   BuildContext context,
   TradeStore store,
-  Product product,
-) async {
+  Product product, {
+  int initialDirection = 1,
+}) async {
   final quantity = TextEditingController(), reason = TextEditingController();
-  var direction = 1;
+  var direction = initialDirection;
   await showEditor(
     context: context,
-    builder: (context) => SaveDialog(
-      title: 'Ajuster le stock',
-      description: '${product.name}\nDisponible : ${product.quantity}',
-      fields: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: DropdownButtonFormField<int>(
-            isExpanded: true,
-            initialValue: direction,
-            decoration: const InputDecoration(labelText: 'Mouvement'),
-            items: const [
-              DropdownMenuItem(value: 1, child: Text('Entrée de stock')),
-              DropdownMenuItem(value: -1, child: Text('Sortie de stock')),
-            ],
-            onChanged: (v) => direction = v!,
+    builder: (context) => StatefulBuilder(
+      builder: (context, refresh) => SaveDialog(
+        title: 'Ajuster le stock',
+        description:
+            '${product.name} · ${product.sku}\nDisponible : ${product.quantity} ${product.unit}',
+        fields: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: DropdownButtonFormField<int>(
+              isExpanded: true,
+              initialValue: direction,
+              decoration: const InputDecoration(labelText: 'Mouvement'),
+              items: const [
+                DropdownMenuItem(value: 1, child: Text('Entrée de stock')),
+                DropdownMenuItem(value: -1, child: Text('Sortie de stock')),
+              ],
+              onChanged: (v) => refresh(() => direction = v!),
+            ),
           ),
-        ),
-        field(quantity, 'Quantité', numeric: true, positive: true),
-        field(reason, 'Motif du mouvement'),
-      ],
-      save: () => store.adjustStock(
-        product.id,
-        int.parse(quantity.text) * direction,
-        reason.text,
+          field(quantity, 'Quantité', numeric: true, positive: true),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: quantity,
+            builder: (context, value, _) {
+              final q = int.tryParse(value.text);
+              final next = q == null ? null : product.quantity + direction * q;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Text(
+                  next == null
+                      ? 'Saisissez la quantité à ajouter ou à retirer.'
+                      : 'Stock après mouvement : $next ${product.unit}',
+                  style: TextStyle(
+                    color: next != null && (next < 0 || next > 1000000000)
+                        ? Theme.of(context).colorScheme.error
+                        : null,
+                  ),
+                ),
+              );
+            },
+          ),
+          field(reason, 'Motif du mouvement'),
+        ],
+        confirm: () async {
+          final delta = int.parse(quantity.text) * direction;
+          if (delta + product.quantity < 0 ||
+              delta + product.quantity > 1000000000) {
+            throw ArgumentError(
+              'Stock insuffisant ou quantité maximale dépassée.',
+            );
+          }
+          return showFlowConfirmation(
+            context,
+            title: 'Confirmer le mouvement ?',
+            description:
+                '${product.name} : ${product.quantity} → ${product.quantity + delta} ${product.unit}.\nMotif : ${reason.text.trim()}',
+            confirmLabel: 'Confirmer',
+          );
+        },
+        save: () async {
+          final delta = int.parse(quantity.text) * direction;
+          await store.adjustStock(
+            product.id,
+            delta,
+            reason.text,
+            expectedQuantity: product.quantity,
+            expectedUnit: product.unit,
+          );
+        },
       ),
     ),
   );
@@ -242,20 +236,27 @@ Future<void> stockForm(
   reason.dispose();
 }
 
-Future<void> orderForm(BuildContext context, TradeStore store) async {
+Future<void> orderForm(
+  BuildContext context,
+  TradeStore store, {
+  String? initialCustomerId,
+}) async {
   final products = store.data.products
       .where((p) => p.quantity > 0 && p.status != ProductStatus.archived)
       .toList();
   final customers = store.data.contacts
-      .where((c) => c.kind == ContactKind.client)
+      .where((c) => c.kind == ContactKind.client && !c.archived)
       .toList();
-  if (products.isEmpty || customers.isEmpty) {
+  if (products.isEmpty ||
+      customers.isEmpty ||
+      (initialCustomerId != null &&
+          !customers.any((c) => c.id == initialCustomerId))) {
     await showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Préparons votre commande'),
         content: const Text(
-          'Ajoutez au moins un produit avec du stock et un contact de type client avant de créer une commande.',
+          'Ajoutez au moins un produit avec du stock et un client actif avant de créer une commande. Le client choisi doit encore être actif.',
         ),
         actions: [
           TextButton(
@@ -267,7 +268,8 @@ Future<void> orderForm(BuildContext context, TradeStore store) async {
     );
     return;
   }
-  var productId = products.first.id, customerId = customers.first.id;
+  var productId = products.first.id,
+      customerId = initialCustomerId ?? customers.first.id;
   final quantity = TextEditingController(text: '1'),
       destination = TextEditingController();
   await showEditor(

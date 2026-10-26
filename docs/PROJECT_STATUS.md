@@ -12,6 +12,8 @@ TradeFlow est actuellement un prototype Flutter local, avec un catalogue d’exe
 | Phase 3 — Panier et accès client | Disponible en simulation | Panier à plusieurs lignes, sauvegarde locale, connexion/inscription/vérification/récupération fictives, livraison, récapitulatif et confirmation. |
 | Phase 4 — Espace client | Disponible en simulation | Accueil personnel, commandes et suivi, profil, adresses, documents spécimens, demandes et notifications locales. |
 | Phase 5 — Produits et catalogue | Disponible localement | Modification, publication, archivage/restauration, catégories, unités et import de photos. Voir [PRODUCTS_AND_CATALOG.md](PRODUCTS_AND_CATALOG.md). |
+| Phase 5 — Stocks et inventaires | Disponible localement | Entrées/sorties confirmées, mouvements avant/après, inventaires atomiques, historique et contrôles de stock périmé. Voir [STOCK_MANAGEMENT.md](STOCK_MANAGEMENT.md). |
+| Phase 5 — Clients et fournisseurs | Disponible localement | Fiches détaillées, recherche/filtres, modification, archivage/restauration et commandes internes liées au client. Voir [PARTNERS_MANAGEMENT.md](PARTNERS_MANAGEMENT.md). |
 | Firebase | Préparation documentaire uniquement | Procédure de raccordement et règles de refus par défaut ; aucun service Firebase connecté. |
 
 Les commandes publiques simulées ne modifient pas le stock ni les commandes de la gestion interne. Le panier public conserve uniquement les identifiants des produits et leurs quantités. Les sessions, adresses et reçus simulés sont temporaires ; les mots de passe ne sont pas persistés.
@@ -49,18 +51,18 @@ Les autres développeurs doivent sélectionner leur propre SDK via **Flutter: Ch
 
 - Format Dart : conforme.
 - Analyse Flutter avec le SDK permanent : aucune anomalie signalée.
-- Tests : 68 scénarios réussis avec le SDK permanent.
+- Tests : 95 scénarios réussis avec le SDK permanent.
 - Racines de packages : 62 présentes, aucune temporaire.
 - Diff Git : aucune erreur d’espacement signalée.
 - Compilation Web de production : réussie avec le SDK permanent.
 
-Les tests couvrent notamment les règles de stock, l’annulation, la persistance, les échecs d’écriture, les recherches et filtres, les six profils, les petits/grands écrans et les parcours de connexion/commande simulés. La recette des quatre phases ajoute le décodage hors réseau des photos et la navigation entre sessions. La phase 4 ajoute des contrôles sur l’historique client, les demandes, les adresses par défaut, leurs instantanés, les notifications et les vues après déconnexion. Le volet produits ajoute la migration des anciennes sauvegardes, la persistance des photos importées, publication/archivage/restauration, catégories/unités et synchronisation du catalogue et du panier local. Ils ne remplacent pas les essais sur appareils Android et iOS.
+Les tests couvrent notamment les règles de stock, l’annulation, la persistance, les échecs d’écriture, les recherches et filtres, les six profils, les petits/grands écrans et les parcours de connexion/commande simulés. La recette des quatre phases ajoute le décodage hors réseau des photos et la navigation entre sessions. La phase 4 ajoute des contrôles sur l’historique client, les demandes, les adresses par défaut, leurs instantanés, les notifications et les vues après déconnexion. Le volet produits ajoute la migration des anciennes sauvegardes, la persistance des photos importées, publication/archivage/restauration, catégories/unités et synchronisation du catalogue et du panier local. Les tests de stocks ajoutent les inventaires atomiques, leurs conflits avec les mouvements récents, la traçabilité, les bornes et les parcours Magasinier/Administrateur. Ils ne remplacent pas les essais sur appareils Android et iOS.
 
 ## Travail restant
 
 | Phase | Travail prévu |
 |---|---|
-| 5 — Suite gestion interne | Inventaires, entrepôts, transferts et fiches partenaires complètes. Le volet produits/catalogue est implémenté localement. |
+| 5 — Suite gestion interne | Entrepôts multiples et transferts. Les volets produits/catalogue, stocks/inventaires et clients/fournisseurs sont implémentés localement. |
 | 6 — Opérations | Devis, achats, réceptions, livraisons partielles et retours. |
 | 7 — Finance et international | Factures, paiements simulés, devises, coûts et documents internationaux. |
 | 8 — Pilotage | Tableaux de bord métier, rapports, collaborateurs et paramètres. |
@@ -69,10 +71,10 @@ Les tests couvrent notamment les règles de stock, l’annulation, la persistanc
 
 ## État avant le prochain commit/push
 
-Le travail local à relire et commiter concerne le volet produits et catalogue de la phase 5 : [PRODUCTS_AND_CATALOG.md](PRODUCTS_AND_CATALOG.md). Aucun push n’est effectué dans cette étape.
+Le travail local à relire et commiter concerne les stocks/inventaires, leurs commentaires métier et les [clients/fournisseurs](PARTNERS_MANAGEMENT.md). Le volet produits/catalogue est enregistré dans le commit `a87e13b`. Aucun push n’est effectué dans cette étape.
 
 Les réglages SDK personnels et les fichiers générés restent exclus. Les fichiers de configuration VS Code partageables peuvent être commités. Le push doit transmettre les sources et la documentation, sans les caches ni le dossier de compilation.
 
 ## Formulation pour expliquer le problème
 
-> Les erreurs affichées dans VS Code venaient d’une configuration locale des dépendances qui référençait un SDK Flutter et un cache temporaires. Les imports non résolus provoquaient une cascade de diagnostics. Les dépendances ont été régénérées avec l’installation permanente et le SDK de l’IDE a été configuré. L’analyse ne signale plus d’anomalie et les 68 tests passent ; un rechargement de VS Code permet de rafraîchir les diagnostics de l’éditeur.
+> Les erreurs affichées dans VS Code venaient d’une configuration locale des dépendances qui référençait un SDK Flutter et un cache temporaires. Les imports non résolus provoquaient une cascade de diagnostics. Les dépendances ont été régénérées avec l’installation permanente et le SDK de l’IDE a été configuré. L’analyse ne signale plus d’anomalie et les 95 tests passent ; un rechargement de VS Code permet de rafraîchir les diagnostics de l’éditeur.

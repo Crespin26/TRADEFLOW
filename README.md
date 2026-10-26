@@ -14,6 +14,10 @@ Le thème commun, les composants réutilisables et les états vide/chargement/er
 
 Pour retrouver les fonctionnalités locales existantes : **Administrateur → Gestion → Ouvrir la gestion locale**. Les exemples de produits se chargent depuis l’accueil de cette gestion, lorsque l’espace local est vide.
 
+Le module [Clients et fournisseurs](docs/PARTNERS_MANAGEMENT.md) permet les fiches détaillées, recherche et filtres, modification, archivage/restauration et consultation des commandes internes d’un client. Il est accessible depuis Contacts et depuis le profil Commercial.
+
+Le module [Stocks et inventaires](docs/STOCK_MANAGEMENT.md) ajoute un écran Magasinier, des entrées/sorties confirmées, l’historique détaillé et les comptages physiques avec contrôle des stocks modifiés pendant la saisie. Les inventaires validés sont sauvegardés localement ; les entrepôts multiples restent à développer.
+
 La [phase 5 — Produits et catalogue](docs/PRODUCTS_AND_CATALOG.md) détaille les parcours, la migration des données et les limites du stockage local.
 
 Voir [docs/UI_FOUNDATIONS.md](docs/UI_FOUNDATIONS.md) pour les conventions, [docs/PUBLIC_CATALOG.md](docs/PUBLIC_CATALOG.md) pour le catalogue et [docs/CART_AND_AUTH_DEMO.md](docs/CART_AND_AUTH_DEMO.md) pour le panier et les parcours simulés. La phase 4 est décrite dans [docs/CUSTOMER_SPACE_DEMO.md](docs/CUSTOMER_SPACE_DEMO.md). Les produits utilisent désormais de vraies photographies illustratives, embarquées dans l’application ; les références et prix restent fictifs. Les [crédits photographiques](docs/PHOTO_CREDITS.md) et la [recette des phases 1 à 4](docs/ACCEPTANCE_PHASES_1_4.md) détaillent cette mise à jour.

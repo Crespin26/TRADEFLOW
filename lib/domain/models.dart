@@ -121,6 +121,11 @@ class Product {
   );
 }
 
+extension ContactKindLabel on ContactKind {
+  String get label => this == ContactKind.client ? 'Client' : 'Fournisseur';
+}
+
+/// Internal business partner; this record does not create an authenticated account.
 class Contact {
   const Contact({
     required this.id,
@@ -129,9 +134,64 @@ class Contact {
     required this.country,
     required this.email,
     required this.phone,
+    this.contactPerson = '',
+    this.address = '',
+    this.city = '',
+    this.postalCode = '',
+    this.taxId = '',
+    this.website = '',
+    this.notes = '',
+    this.archived = false,
+    this.revision = 0,
   });
-  final String id, name, country, email, phone;
+  final String id,
+      name,
+      country,
+      email,
+      phone,
+      contactPerson,
+      address,
+      city,
+      postalCode,
+      taxId,
+      website,
+      notes;
   final ContactKind kind;
+  final bool archived;
+  // Monotonic revision also detects an archive/restore cycle while an editor is open.
+  final int revision;
+  Contact copyWith({
+    String? name,
+    ContactKind? kind,
+    String? country,
+    String? email,
+    String? phone,
+    String? contactPerson,
+    String? address,
+    String? city,
+    String? postalCode,
+    String? taxId,
+    String? website,
+    String? notes,
+    bool? archived,
+    int? revision,
+  }) => Contact(
+    id: id,
+    name: name ?? this.name,
+    kind: kind ?? this.kind,
+    country: country ?? this.country,
+    email: email ?? this.email,
+    phone: phone ?? this.phone,
+    contactPerson: contactPerson ?? this.contactPerson,
+    address: address ?? this.address,
+    city: city ?? this.city,
+    postalCode: postalCode ?? this.postalCode,
+    taxId: taxId ?? this.taxId,
+    website: website ?? this.website,
+    notes: notes ?? this.notes,
+    archived: archived ?? this.archived,
+    revision: revision ?? this.revision,
+  );
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
@@ -139,7 +199,17 @@ class Contact {
     'country': country,
     'email': email,
     'phone': phone,
+    'contactPerson': contactPerson,
+    'address': address,
+    'city': city,
+    'postalCode': postalCode,
+    'taxId': taxId,
+    'website': website,
+    'notes': notes,
+    'archived': archived,
+    'revision': revision,
   };
+  // Optional defaults preserve partners loaded from versions 1 and 2 of the local snapshot.
   factory Contact.fromJson(Map<String, dynamic> j) => Contact(
     id: j['id'] as String,
     name: j['name'] as String,
@@ -147,6 +217,15 @@ class Contact {
     country: j['country'] as String,
     email: j['email'] as String,
     phone: j['phone'] as String,
+    contactPerson: j['contactPerson'] as String? ?? '',
+    address: j['address'] as String? ?? '',
+    city: j['city'] as String? ?? '',
+    postalCode: j['postalCode'] as String? ?? '',
+    taxId: j['taxId'] as String? ?? '',
+    website: j['website'] as String? ?? '',
+    notes: j['notes'] as String? ?? '',
+    archived: j['archived'] as bool? ?? false,
+    revision: j['revision'] as int? ?? 0,
   );
 }
 
@@ -211,6 +290,28 @@ class TradeOrder {
   );
 }
 
+enum StockMovementKind {
+  legacy,
+  initial,
+  receipt,
+  issue,
+  sale,
+  cancellation,
+  inventory,
+}
+
+extension StockMovementKindLabel on StockMovementKind {
+  String get label => switch (this) {
+    StockMovementKind.legacy => 'Ancien mouvement',
+    StockMovementKind.initial => 'Stock initial',
+    StockMovementKind.receipt => 'Entrée',
+    StockMovementKind.issue => 'Sortie',
+    StockMovementKind.sale => 'Commande',
+    StockMovementKind.cancellation => 'Annulation',
+    StockMovementKind.inventory => 'Inventaire',
+  };
+}
+
 class StockMovement {
   const StockMovement({
     required this.id,
@@ -218,9 +319,19 @@ class StockMovement {
     required this.delta,
     required this.reason,
     required this.createdAt,
+    this.productId,
+    this.sku = '',
+    this.unit = '',
+    this.kind = StockMovementKind.legacy,
+    this.beforeQuantity,
+    this.afterQuantity,
+    this.reference,
   });
-  final String id, productName, reason;
+  final String id, productName, reason, sku, unit;
+  final String? productId, reference;
   final int delta;
+  final int? beforeQuantity, afterQuantity;
+  final StockMovementKind kind;
   final DateTime createdAt;
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -228,6 +339,13 @@ class StockMovement {
     'delta': delta,
     'reason': reason,
     'createdAt': createdAt.toIso8601String(),
+    'productId': productId,
+    'sku': sku,
+    'unit': unit,
+    'kind': kind.name,
+    'beforeQuantity': beforeQuantity,
+    'afterQuantity': afterQuantity,
+    'reference': reference,
   };
   factory StockMovement.fromJson(Map<String, dynamic> j) => StockMovement(
     id: j['id'] as String,
@@ -235,6 +353,72 @@ class StockMovement {
     delta: j['delta'] as int,
     reason: j['reason'] as String,
     createdAt: DateTime.parse(j['createdAt'] as String),
+    productId: j['productId'] as String?,
+    sku: j['sku'] as String? ?? '',
+    unit: j['unit'] as String? ?? '',
+    kind: StockMovementKind.values.byName(j['kind'] as String? ?? 'legacy'),
+    beforeQuantity: j['beforeQuantity'] as int?,
+    afterQuantity: j['afterQuantity'] as int?,
+    reference: j['reference'] as String?,
+  );
+}
+
+/// A physical count keeps its opening quantity so stale counts cannot erase newer movements.
+class StockCount {
+  const StockCount({
+    required this.productId,
+    required this.productName,
+    required this.sku,
+    required this.unit,
+    required this.expectedQuantity,
+    required this.countedQuantity,
+  });
+  final String productId, productName, sku, unit;
+  final int expectedQuantity, countedQuantity;
+  int get delta => countedQuantity - expectedQuantity;
+  Map<String, dynamic> toJson() => {
+    'productId': productId,
+    'productName': productName,
+    'sku': sku,
+    'unit': unit,
+    'expectedQuantity': expectedQuantity,
+    'countedQuantity': countedQuantity,
+  };
+  factory StockCount.fromJson(Map<String, dynamic> j) => StockCount(
+    productId: j['productId'] as String,
+    productName: j['productName'] as String,
+    sku: j['sku'] as String,
+    unit: j['unit'] as String,
+    expectedQuantity: j['expectedQuantity'] as int,
+    countedQuantity: j['countedQuantity'] as int,
+  );
+}
+
+/// Immutable audit of validated counts, including products with no discrepancy.
+class StockInventory {
+  StockInventory({
+    required this.id,
+    required this.reason,
+    required this.createdAt,
+    required List<StockCount> counts,
+  }) : counts = List.unmodifiable(counts);
+  final String id, reason;
+  final DateTime createdAt;
+  final List<StockCount> counts;
+  int get correctedProducts => counts.where((c) => c.delta != 0).length;
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'reason': reason,
+    'createdAt': createdAt.toIso8601String(),
+    'counts': counts.map((c) => c.toJson()).toList(),
+  };
+  factory StockInventory.fromJson(Map<String, dynamic> j) => StockInventory(
+    id: j['id'] as String,
+    reason: j['reason'] as String,
+    createdAt: DateTime.parse(j['createdAt'] as String),
+    counts: (j['counts'] as List)
+        .map((c) => StockCount.fromJson(c as Map<String, dynamic>))
+        .toList(),
   );
 }
 
@@ -259,18 +443,21 @@ class TradeData {
     List<Contact> contacts = const [],
     List<TradeOrder> orders = const [],
     List<StockMovement> movements = const [],
+    List<StockInventory> inventories = const [],
   }) : categories = List.unmodifiable(categories),
        units = List.unmodifiable(units),
        products = List.unmodifiable(products),
        contacts = List.unmodifiable(contacts),
        orders = List.unmodifiable(orders),
-       movements = List.unmodifiable(movements);
+       movements = List.unmodifiable(movements),
+       inventories = List.unmodifiable(inventories);
   final bool catalogEnabled;
   final List<String> categories, units;
   final List<Product> products;
   final List<Contact> contacts;
   final List<TradeOrder> orders;
   final List<StockMovement> movements;
+  final List<StockInventory> inventories;
   TradeData copyWith({
     bool? catalogEnabled,
     List<String>? categories,
@@ -279,6 +466,7 @@ class TradeData {
     List<Contact>? contacts,
     List<TradeOrder>? orders,
     List<StockMovement>? movements,
+    List<StockInventory>? inventories,
   }) => TradeData(
     catalogEnabled: catalogEnabled ?? this.catalogEnabled,
     categories: categories ?? this.categories,
@@ -287,6 +475,7 @@ class TradeData {
     contacts: contacts ?? this.contacts,
     orders: orders ?? this.orders,
     movements: movements ?? this.movements,
+    inventories: inventories ?? this.inventories,
   );
   Map<String, dynamic> toJson() => {
     'version': 2,
@@ -297,6 +486,7 @@ class TradeData {
     'contacts': contacts.map((e) => e.toJson()).toList(),
     'orders': orders.map((e) => e.toJson()).toList(),
     'movements': movements.map((e) => e.toJson()).toList(),
+    'inventories': inventories.map((e) => e.toJson()).toList(),
   };
   factory TradeData.fromJson(Map<String, dynamic> j) {
     if (j['version'] != 1 && j['version'] != 2) {
@@ -318,6 +508,9 @@ class TradeData {
           .toList(),
       orders: (j['orders'] as List)
           .map((e) => TradeOrder.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      inventories: (j['inventories'] as List? ?? [])
+          .map((e) => StockInventory.fromJson(e as Map<String, dynamic>))
           .toList(),
       movements: (j['movements'] as List)
           .map((e) => StockMovement.fromJson(e as Map<String, dynamic>))

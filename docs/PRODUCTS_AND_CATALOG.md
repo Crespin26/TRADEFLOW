@@ -57,4 +57,4 @@ Tests automatisés : migration version 1, persistance version 2 et photos, histo
 
 ## Suite de la gestion interne
 
-Ce volet clôt les **produits et le catalogue**. Les inventaires, entrepôts, transferts de stock et fiches partenaires complètes de la phase interne restent à développer. Les ventes, achats, devis et réceptions appartiennent aux étapes suivantes.
+Ce volet clôt les **produits et le catalogue**. Le module [Stocks et inventaires](STOCK_MANAGEMENT.md) permet désormais les comptages physiques, les entrées/sorties et leur traçabilité locale. Les [fiches clients et fournisseurs](PARTNERS_MANAGEMENT.md) sont également disponibles. Les entrepôts multiples et transferts de stock restent à développer. Les ventes, achats, devis et réceptions appartiennent aux étapes suivantes.

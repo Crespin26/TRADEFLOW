@@ -1,3 +1,5 @@
+import '../stock/stock_page.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../domain/models.dart';
@@ -82,6 +84,17 @@ class _ProductsManagementState extends State<ProductsManagement> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: OutlinedButton.icon(
+            onPressed: () => Navigator.push<void>(
+              context,
+              MaterialPageRoute(builder: (_) => StockPage(store: store)),
+            ),
+            icon: const Icon(Icons.warehouse_outlined),
+            label: const Text('Gérer les stocks'),
+          ),
+        ),
         Text('${items.length} produit(s) · Prix unitaires en XOF'),
         Text(
           store.data.catalogEnabled
