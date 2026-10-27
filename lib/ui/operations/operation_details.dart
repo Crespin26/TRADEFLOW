@@ -1,3 +1,5 @@
+import '../fulfilment/fulfilment_forms.dart';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -121,6 +123,14 @@ Widget commercialJournal(TradeStore store, String id) => Column(
             children: [
               Text('${event.kind.label} · ${event.quantity} ${event.unit}'),
               Text(event.reason),
+              if (event.kind == CommercialEventKind.customerReturn)
+                Text(
+                  event.restocked
+                      ? 'Réintégré au stock disponible'
+                      : 'Hors stock disponible',
+                ),
+              if (event.carrier.isNotEmpty) Text(event.carrier),
+              if (event.trackingNumber.isNotEmpty) Text(event.trackingNumber),
               Text(commercialDate(event.createdAt)),
               SelectableText(event.id),
             ],
@@ -500,22 +510,45 @@ class SaleDetailPage extends StatelessWidget {
                       TextButton(
                         onPressed: store.busy
                             ? null
-                            : () => commercialQuantityForm(
-                                context,
-                                title: 'Retour client',
-                                maximum: o.returnableQuantity,
-                                unit: o.unit,
-                                save: (qty, reason) => store.returnCustomer(
-                                  o.id,
-                                  qty,
-                                  reason,
-                                  expectedRevision: o.revision,
-                                ),
-                              ),
+                            : () => customerReturnForm(context, store, o),
                         child: const Text('Retour client'),
                       ),
                   ],
                 ),
+                if (o.status == OrderStatus.confirmed ||
+                    o.status == OrderStatus.shipped)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: OutlinedButton.icon(
+                      onPressed: store.busy
+                          ? null
+                          : () => deliveryPlanForm(context, store, o),
+                      icon: const Icon(Icons.local_shipping_outlined),
+                      label: const Text('Transporteur et suivi'),
+                    ),
+                  ),
+                for (final plan in store.data.deliveryPlans.where(
+                  (p) => p.orderId == o.id,
+                ))
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (plan.carrier.isNotEmpty)
+                            Text('Transporteur : ${plan.carrier}'),
+                          if (plan.trackingNumber.isNotEmpty)
+                            SelectableText('Suivi : ${plan.trackingNumber}'),
+                          if (plan.expectedDate != null)
+                            Text(
+                              'Date prévue : ${commercialDate(plan.expectedDate!)}',
+                            ),
+                          if (plan.notes.isNotEmpty) Text(plan.notes),
+                        ],
+                      ),
+                    ),
+                  ),
                 commercialJournal(store, o.id),
               ],
             ),

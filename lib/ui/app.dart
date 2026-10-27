@@ -1,3 +1,4 @@
+import 'fulfilment/fulfilment_page.dart';
 import 'operations/operations_page.dart';
 import 'operations/operation_details.dart';
 import 'partners/partner_editor.dart';
@@ -46,14 +47,16 @@ class TradeFlowApp extends StatelessWidget {
         stockBuilder: (_) => StockPage(store: store),
         partnersBuilder: (_) =>
             PartnersPage(store: store, initialKind: ContactKind.client),
-        operationsBuilder: (label) => OperationsPage(
-          store: store,
-          initialTab: label == 'Devis'
-              ? 1
-              : label == 'Réceptions'
-              ? 2
-              : 0,
-        ),
+        operationsBuilder: (label) => label == 'Expéditions'
+            ? FulfilmentPage(store: store)
+            : OperationsPage(
+                store: store,
+                initialTab: label == 'Devis'
+                    ? 1
+                    : label == 'Réceptions'
+                    ? 2
+                    : 0,
+              ),
         managementBuilder: (_) => LocalManagementPage(store: store),
       ),
     ),

@@ -1,3 +1,5 @@
+import 'fulfilment_models.dart';
+export 'fulfilment_models.dart';
 import 'commercial_models.dart';
 export 'commercial_models.dart';
 import 'catalog_photos.dart';
@@ -490,6 +492,7 @@ class TradeData {
     List<TradeQuote> quotes = const [],
     List<PurchaseOrder> purchases = const [],
     List<CommercialEvent> commercialEvents = const [],
+    List<DeliveryPlan> deliveryPlans = const [],
   }) : categories = List.unmodifiable(categories),
        units = List.unmodifiable(units),
        products = List.unmodifiable(products),
@@ -499,7 +502,8 @@ class TradeData {
        inventories = List.unmodifiable(inventories),
        quotes = List.unmodifiable(quotes),
        purchases = List.unmodifiable(purchases),
-       commercialEvents = List.unmodifiable(commercialEvents);
+       commercialEvents = List.unmodifiable(commercialEvents),
+       deliveryPlans = List.unmodifiable(deliveryPlans);
   final bool catalogEnabled;
   final List<String> categories, units;
   final List<Product> products;
@@ -510,6 +514,7 @@ class TradeData {
   final List<TradeQuote> quotes;
   final List<PurchaseOrder> purchases;
   final List<CommercialEvent> commercialEvents;
+  final List<DeliveryPlan> deliveryPlans;
   TradeData copyWith({
     bool? catalogEnabled,
     List<String>? categories,
@@ -522,6 +527,7 @@ class TradeData {
     List<TradeQuote>? quotes,
     List<PurchaseOrder>? purchases,
     List<CommercialEvent>? commercialEvents,
+    List<DeliveryPlan>? deliveryPlans,
   }) => TradeData(
     catalogEnabled: catalogEnabled ?? this.catalogEnabled,
     categories: categories ?? this.categories,
@@ -534,6 +540,7 @@ class TradeData {
     quotes: quotes ?? this.quotes,
     purchases: purchases ?? this.purchases,
     commercialEvents: commercialEvents ?? this.commercialEvents,
+    deliveryPlans: deliveryPlans ?? this.deliveryPlans,
   );
   Map<String, dynamic> toJson() => {
     'version': 2,
@@ -548,6 +555,7 @@ class TradeData {
     'quotes': quotes.map((e) => e.toJson()).toList(),
     'purchases': purchases.map((e) => e.toJson()).toList(),
     'commercialEvents': commercialEvents.map((e) => e.toJson()).toList(),
+    'deliveryPlans': deliveryPlans.map((e) => e.toJson()).toList(),
   };
   factory TradeData.fromJson(Map<String, dynamic> j) {
     if (j['version'] != 1 && j['version'] != 2) {
@@ -569,6 +577,9 @@ class TradeData {
           .toList(),
       orders: (j['orders'] as List)
           .map((e) => TradeOrder.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      deliveryPlans: (j['deliveryPlans'] as List? ?? [])
+          .map((e) => DeliveryPlan.fromJson(e as Map<String, dynamic>))
           .toList(),
       quotes: (j['quotes'] as List? ?? [])
           .map((e) => TradeQuote.fromJson(e as Map<String, dynamic>))

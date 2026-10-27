@@ -1,3 +1,5 @@
+import '../fulfilment/fulfilment_page.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../domain/models.dart';
@@ -113,6 +115,17 @@ class _OperationsPageState extends State<OperationsPage> {
                         decoration: const InputDecoration(
                           labelText: 'Rechercher un document ou partenaire',
                           prefixIcon: Icon(Icons.search),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: OutlinedButton.icon(
+                          onPressed: () => open(FulfilmentPage(store: store)),
+                          icon: const Icon(Icons.local_shipping_outlined),
+                          label: const Text('Livraisons et retours'),
                         ),
                       ),
                     ),

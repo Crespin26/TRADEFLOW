@@ -33,7 +33,7 @@ Une vente directe utilise le prix actuel du produit et un client actif. Sa confi
 - **Confirmée → Expédier** : le stock reste inchangé, car il a déjà été déduit.
 - **Expédiée → Enregistrer une livraison** : saisir la quantité réellement livrée et une référence ou un motif. Plusieurs livraisons sont possibles jusqu’à la quantité commandée.
 - La commande reste expédiée pendant une livraison partielle. Elle devient livrée lorsque la totalité de la quantité commandée a été livrée.
-- **Retour client** : saisir une quantité effectivement livrée et non encore retournée. Elle est réintégrée au stock disponible, avec motif et historique.
+- **Retour client** : saisir une quantité effectivement livrée et non encore retournée. Elle est réintégrée au stock disponible si la case correspondante est cochée ; sinon elle reste hors disponible. Le motif et l’historique sont toujours conservés.
 - Une commande confirmée peut être annulée : le stock est restitué une seule fois. Après expédition, utiliser les retours sur les quantités livrées ; l’annulation n’est plus autorisée.
 
 L’ancien bouton « Marquer livrée » enregistre désormais le solde restant à livrer et son opération historique. Les livraisons ne créent pas de deuxième sortie de stock. Les retours ne rouvrent pas automatiquement une quantité à livrer et ne constituent ni remboursement ni avoir. Une nouvelle livraison de remplacement nécessite une nouvelle commande.
@@ -81,3 +81,5 @@ Les sauvegardes versions 1 et 2 restent lisibles. Les listes `quotes`, `purchase
 Tests métier : prix et noms convenus, conversion unique, transitions et validité des devis, modifications obsolètes, réceptions et livraisons partielles, retours bornés, stock insuffisant ou maximal, changements d’unité et de prix, archives, échecs de sauvegarde, anciennes données et redémarrage du magasin local.
 
 Tests d’interface à 320 et 1 440 pixels : création d’un devis et d’un achat, acceptation/conversion, expédition/livraison partielle, réception partielle et retours. Les accès Commercial/Magasinier et l’édition d’un brouillon dont le produit a été archivé sont également contrôlés.
+
+Le [module Livraisons et retours](DELIVERIES_AND_RETURNS.md) ajoute le suivi transporteur, les retards et le choix de ne pas réintégrer les marchandises non revendables.

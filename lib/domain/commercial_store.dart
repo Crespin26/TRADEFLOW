@@ -63,12 +63,21 @@ extension CommercialOperations on TradeStore {
     required int quantity,
     required String reason,
     required CommercialEventKind kind,
+    bool restocked = true,
   }) {
     _checkText(reason, 'Le motif ou la référence');
     if (reason.trim().length > 500) {
       throw ArgumentError('Le motif est limité à 500 caractères.');
     }
+    final plan = _data.deliveryPlans
+        .where((p) => p.orderId == documentId)
+        .firstOrNull;
     return CommercialEvent(
+      restocked: restocked,
+      carrier: kind == CommercialEventKind.delivery ? plan?.carrier ?? '' : '',
+      trackingNumber: kind == CommercialEventKind.delivery
+          ? plan?.trackingNumber ?? ''
+          : '',
       id: _id('OP'),
       documentId: documentId,
       productId: product.id,
@@ -477,6 +486,7 @@ extension CommercialOperations on TradeStore {
     int quantity,
     String reason, {
     required int expectedRevision,
+    bool restock = true,
   }) async {
     final order = _data.orders.firstWhere((o) => o.id == id);
     _revision(order.revision, expectedRevision);
@@ -488,7 +498,9 @@ extension CommercialOperations on TradeStore {
       );
     }
     final p = _commercialProduct(order.productId, active: false);
-    _sameUnit(p, order.unit);
+    if (restock) {
+      _sameUnit(p, order.unit);
+    }
     final event = _event(
       documentId: id,
       product: p,
@@ -498,6 +510,7 @@ extension CommercialOperations on TradeStore {
       quantity: quantity,
       reason: reason,
       kind: CommercialEventKind.customerReturn,
+      restocked: restock,
     );
     final next = _data.copyWith(
       orders: [
@@ -509,13 +522,15 @@ extension CommercialOperations on TradeStore {
       ],
     );
     await _commit(
-      _stockOperation(
-        next,
-        p,
-        quantity,
-        event,
-        StockMovementKind.customerReturn,
-      ),
+      restock
+          ? _stockOperation(
+              next,
+              p,
+              quantity,
+              event,
+              StockMovementKind.customerReturn,
+            )
+          : next.copyWith(commercialEvents: [event, ..._data.commercialEvents]),
     );
   }
 
@@ -564,6 +579,51 @@ extension CommercialOperations on TradeStore {
         -quantity,
         event,
         StockMovementKind.supplierReturn,
+      ),
+    );
+  }
+
+  Future<void> saveDeliveryPlan(
+    String orderId, {
+    required String carrier,
+    required String trackingNumber,
+    required String notes,
+    DateTime? expectedDate,
+    required int expectedRevision,
+  }) async {
+    final order = _data.orders.firstWhere((o) => o.id == orderId);
+    if (order.status == OrderStatus.cancelled ||
+        order.status == OrderStatus.delivered) {
+      throw StateError(
+        'Le suivi d’une commande terminée ou annulée est conservé en lecture seule.',
+      );
+    }
+    final original = _data.deliveryPlans
+        .where((p) => p.orderId == orderId)
+        .firstOrNull;
+    _revision(original?.revision ?? 0, expectedRevision);
+    if (carrier.trim().length > 160 ||
+        trackingNumber.trim().length > 160 ||
+        notes.trim().length > 1000) {
+      throw ArgumentError(
+        'Transporteur et suivi : 160 caractères ; notes : 1 000 maximum.',
+      );
+    }
+    final plan = DeliveryPlan(
+      orderId: orderId,
+      carrier: carrier.trim(),
+      trackingNumber: trackingNumber.trim(),
+      notes: notes.trim(),
+      expectedDate: expectedDate,
+      updatedAt: DateTime.now(),
+      revision: (original?.revision ?? 0) + 1,
+    );
+    await _commit(
+      _data.copyWith(
+        deliveryPlans: [
+          plan,
+          ..._data.deliveryPlans.where((p) => p.orderId != orderId),
+        ],
       ),
     );
   }

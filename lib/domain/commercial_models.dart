@@ -243,6 +243,9 @@ class CommercialEvent {
     required this.reason,
     required this.kind,
     required this.createdAt,
+    this.restocked = true,
+    this.carrier = '',
+    this.trackingNumber = '',
   });
   final String id,
       documentId,
@@ -251,10 +254,15 @@ class CommercialEvent {
       partnerName,
       unit,
       reason;
+  final bool restocked;
+  final String carrier, trackingNumber;
   final int quantity;
   final CommercialEventKind kind;
   final DateTime createdAt;
   Map<String, dynamic> toJson() => {
+    'restocked': restocked,
+    'carrier': carrier,
+    'trackingNumber': trackingNumber,
     'id': id,
     'documentId': documentId,
     'productId': productId,
@@ -267,6 +275,9 @@ class CommercialEvent {
     'createdAt': createdAt.toIso8601String(),
   };
   factory CommercialEvent.fromJson(Map<String, dynamic> j) => CommercialEvent(
+    restocked: j['restocked'] as bool? ?? true,
+    carrier: j['carrier'] as String? ?? '',
+    trackingNumber: j['trackingNumber'] as String? ?? '',
     id: j['id'] as String,
     documentId: j['documentId'] as String,
     productId: j['productId'] as String,
