@@ -18,10 +18,12 @@ class FoundationShell extends StatefulWidget {
     required this.managementBuilder,
     this.stockBuilder,
     this.partnersBuilder,
+    this.operationsBuilder,
   });
   final WidgetBuilder managementBuilder;
   final WidgetBuilder? stockBuilder;
   final WidgetBuilder? partnersBuilder;
+  final Widget Function(String)? operationsBuilder;
   @override
   State<FoundationShell> createState() => _FoundationShellState();
 }
@@ -283,6 +285,31 @@ class _FoundationShellState extends State<FoundationShell> {
                                   context,
                                   MaterialPageRoute(
                                     builder: widget.partnersBuilder!,
+                                  ),
+                                ),
+                              )
+                            else if (widget.operationsBuilder != null &&
+                                ((activeProfile == DemoProfile.sales &&
+                                        [
+                                          'Devis',
+                                          'Commandes',
+                                        ].contains(destination.label)) ||
+                                    (activeProfile == DemoProfile.warehouse &&
+                                        [
+                                          'Réceptions',
+                                          'Expéditions',
+                                        ].contains(destination.label))))
+                              FlowStateView(
+                                title: 'Opérations commerciales locales',
+                                description: 'Devis, ventes, achats, réceptions, livraisons et retours sont enregistrés sur cet appareil.',
+                                icon: Icons.handshake_outlined,
+                                actionLabel: 'Ouvrir les opérations',
+                                onAction: () => Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => widget.operationsBuilder!(
+                                      destination.label,
+                                    ),
                                   ),
                                 ),
                               )

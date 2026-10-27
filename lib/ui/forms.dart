@@ -319,6 +319,8 @@ Future<void> orderForm(
       save: () => store.createOrder(
         productId: productId,
         customerId: customerId,
+        expectedUnit: products.firstWhere((p) => p.id == productId).unit,
+        expectedPrice: products.firstWhere((p) => p.id == productId).price,
         quantity: int.parse(quantity.text),
         destination: destination.text,
       ),

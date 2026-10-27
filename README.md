@@ -14,6 +14,8 @@ Le thème commun, les composants réutilisables et les états vide/chargement/er
 
 Pour retrouver les fonctionnalités locales existantes : **Administrateur → Gestion → Ouvrir la gestion locale**. Les exemples de produits se chargent depuis l’accueil de cette gestion, lorsque l’espace local est vide.
 
+La [phase 6 — Opérations commerciales](docs/COMMERCIAL_OPERATIONS.md) ajoute les devis convertibles, achats fournisseurs, réceptions et livraisons partielles, retours clients/fournisseurs et leur journal. Les documents portent une référence produit et des montants XOF ; les opérations et leurs effets sur le stock sont sauvegardés ensemble.
+
 Le module [Clients et fournisseurs](docs/PARTNERS_MANAGEMENT.md) permet les fiches détaillées, recherche et filtres, modification, archivage/restauration et consultation des commandes internes d’un client. Il est accessible depuis Contacts et depuis le profil Commercial.
 
 Le module [Stocks et inventaires](docs/STOCK_MANAGEMENT.md) ajoute un écran Magasinier, des entrées/sorties confirmées, l’historique détaillé et les comptages physiques avec contrôle des stocks modifiés pendant la saisie. Les inventaires validés sont sauvegardés localement ; les entrepôts multiples restent à développer.

@@ -29,7 +29,7 @@ Les trois onglets sont **Stocks**, **Mouvements** et **Inventaires**.
 
 Le stock doit rester compris entre 0 et 1 000 000 000. Une sortie excessive est refusée. Si la quantité ou l’unité a changé depuis l’ouverture du formulaire, l’enregistrement est refusé ; fermer et rouvrir le formulaire avec les données actuelles.
 
-Une entrée manuelle constate une augmentation du stock ; elle ne crée ni achat, ni facture fournisseur, ni document de réception.
+Une entrée manuelle constate une augmentation du stock ; elle ne crée ni achat, ni facture fournisseur, ni document de réception. Pour lier un mouvement à un achat, utiliser les réceptions de la [phase 6](COMMERCIAL_OPERATIONS.md).
 
 ## Inventaire physique
 

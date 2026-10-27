@@ -1,3 +1,5 @@
+import 'operations/operations_page.dart';
+import 'operations/operation_details.dart';
 import 'partners/partner_editor.dart';
 import 'partners/partners_page.dart';
 import 'stock/stock_page.dart';
@@ -44,6 +46,14 @@ class TradeFlowApp extends StatelessWidget {
         stockBuilder: (_) => StockPage(store: store),
         partnersBuilder: (_) =>
             PartnersPage(store: store, initialKind: ContactKind.client),
+        operationsBuilder: (label) => OperationsPage(
+          store: store,
+          initialTab: label == 'Devis'
+              ? 1
+              : label == 'Réceptions'
+              ? 2
+              : 0,
+        ),
         managementBuilder: (_) => LocalManagementPage(store: store),
       ),
     ),
@@ -356,10 +366,20 @@ class _TradeShellState extends State<TradeShell> {
               o.status == OrderStatus.shipped,
         )
         .length;
-    final delivered = data.orders
-        .where((o) => o.status == OrderStatus.delivered)
-        .fold(0, (s, o) => s + o.total);
+    final delivered = data.orders.fold(
+      0,
+      (s, o) => s + (o.deliveredQuantity - o.returnedQuantity) * o.unitPrice,
+    );
     return [
+      OutlinedButton.icon(
+        onPressed: () => Navigator.push<void>(
+          context,
+          MaterialPageRoute(builder: (_) => OperationsPage(store: store)),
+        ),
+        icon: const Icon(Icons.handshake_outlined),
+        label: const Text('Opérations commerciales'),
+      ),
+      const SizedBox(height: 12),
       Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
@@ -427,7 +447,12 @@ class _TradeShellState extends State<TradeShell> {
               Icons.warning_amber_rounded,
               const Color(0xFFB96E14),
             ),
-            ('Valeur livrée', money(delivered), Icons.task_alt_rounded, teal),
+            (
+              'Valeur livrée nette',
+              money(delivered),
+              Icons.task_alt_rounded,
+              teal,
+            ),
           ];
           return Wrap(
             spacing: 12,
@@ -529,6 +554,15 @@ class _TradeShellState extends State<TradeShell> {
         )
         .toList();
     return [
+      OutlinedButton.icon(
+        onPressed: () => Navigator.push<void>(
+          context,
+          MaterialPageRoute(builder: (_) => OperationsPage(store: store)),
+        ),
+        icon: const Icon(Icons.handshake_outlined),
+        label: const Text('Devis, achats et livraisons'),
+      ),
+      const SizedBox(height: 12),
       Wrap(
         spacing: 8,
         children: [
@@ -602,6 +636,18 @@ class _TradeShellState extends State<TradeShell> {
           SelectableText(
             o.id,
             style: const TextStyle(fontSize: 10, color: Colors.blueGrey),
+          ),
+          Text(
+            'Livré : ${o.deliveredQuantity}/${o.quantity} · Retourné : ${o.returnedQuantity}',
+          ),
+          TextButton(
+            onPressed: () => Navigator.push<void>(
+              context,
+              MaterialPageRoute(
+                builder: (_) => SaleDetailPage(store: store, id: o.id),
+              ),
+            ),
+            child: const Text('Livraisons et retours'),
           ),
           if (o.status == OrderStatus.confirmed ||
               o.status == OrderStatus.shipped) ...[

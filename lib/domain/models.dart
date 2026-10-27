@@ -1,3 +1,5 @@
+import 'commercial_models.dart';
+export 'commercial_models.dart';
 import 'catalog_photos.dart';
 
 enum ContactKind { client, supplier }
@@ -241,18 +243,33 @@ class TradeOrder {
     required this.status,
     required this.createdAt,
     required this.destination,
-  });
+    this.unit = '',
+    int? deliveredQuantity,
+    this.returnedQuantity = 0,
+    this.revision = 0,
+    this.quoteId,
+  }) : deliveredQuantity =
+           deliveredQuantity ??
+           (status == OrderStatus.delivered ? quantity : 0);
   final String id,
       customerId,
       customerName,
       productId,
       productName,
-      destination;
-  final int quantity, unitPrice;
+      destination,
+      unit;
+  final String? quoteId;
+  final int quantity, unitPrice, deliveredQuantity, returnedQuantity, revision;
   final OrderStatus status;
   final DateTime createdAt;
   int get total => quantity * unitPrice;
-  TradeOrder withStatus(OrderStatus value) => TradeOrder(
+  int get remainingQuantity => quantity - deliveredQuantity;
+  int get returnableQuantity => deliveredQuantity - returnedQuantity;
+  TradeOrder copyWith({
+    OrderStatus? status,
+    int? deliveredQuantity,
+    int? returnedQuantity,
+  }) => TradeOrder(
     id: id,
     customerId: customerId,
     customerName: customerName,
@@ -260,9 +277,18 @@ class TradeOrder {
     productName: productName,
     quantity: quantity,
     unitPrice: unitPrice,
-    status: value,
+    status: status ?? this.status,
     createdAt: createdAt,
     destination: destination,
+    unit: unit,
+    quoteId: quoteId,
+    deliveredQuantity: deliveredQuantity ?? this.deliveredQuantity,
+    returnedQuantity: returnedQuantity ?? this.returnedQuantity,
+    revision: revision + 1,
+  );
+  TradeOrder withStatus(OrderStatus value) => copyWith(
+    status: value,
+    deliveredQuantity: value == OrderStatus.delivered ? quantity : null,
   );
   Map<String, dynamic> toJson() => {
     'id': id,
@@ -275,7 +301,13 @@ class TradeOrder {
     'status': status.name,
     'createdAt': createdAt.toIso8601String(),
     'destination': destination,
+    'unit': unit,
+    'deliveredQuantity': deliveredQuantity,
+    'returnedQuantity': returnedQuantity,
+    'revision': revision,
+    'quoteId': quoteId,
   };
+  // Old delivered orders are fully delivered; missing historical events are never fabricated.
   factory TradeOrder.fromJson(Map<String, dynamic> j) => TradeOrder(
     id: j['id'] as String,
     customerId: j['customerId'] as String,
@@ -287,6 +319,11 @@ class TradeOrder {
     status: OrderStatus.values.byName(j['status'] as String),
     createdAt: DateTime.parse(j['createdAt'] as String),
     destination: j['destination'] as String,
+    unit: j['unit'] as String? ?? '',
+    deliveredQuantity: j['deliveredQuantity'] as int?,
+    returnedQuantity: j['returnedQuantity'] as int? ?? 0,
+    revision: j['revision'] as int? ?? 0,
+    quoteId: j['quoteId'] as String?,
   );
 }
 
@@ -298,6 +335,9 @@ enum StockMovementKind {
   sale,
   cancellation,
   inventory,
+  purchaseReceipt,
+  customerReturn,
+  supplierReturn,
 }
 
 extension StockMovementKindLabel on StockMovementKind {
@@ -309,6 +349,9 @@ extension StockMovementKindLabel on StockMovementKind {
     StockMovementKind.sale => 'Commande',
     StockMovementKind.cancellation => 'Annulation',
     StockMovementKind.inventory => 'Inventaire',
+    StockMovementKind.purchaseReceipt => 'Réception achat',
+    StockMovementKind.customerReturn => 'Retour client',
+    StockMovementKind.supplierReturn => 'Retour fournisseur',
   };
 }
 
@@ -444,13 +487,19 @@ class TradeData {
     List<TradeOrder> orders = const [],
     List<StockMovement> movements = const [],
     List<StockInventory> inventories = const [],
+    List<TradeQuote> quotes = const [],
+    List<PurchaseOrder> purchases = const [],
+    List<CommercialEvent> commercialEvents = const [],
   }) : categories = List.unmodifiable(categories),
        units = List.unmodifiable(units),
        products = List.unmodifiable(products),
        contacts = List.unmodifiable(contacts),
        orders = List.unmodifiable(orders),
        movements = List.unmodifiable(movements),
-       inventories = List.unmodifiable(inventories);
+       inventories = List.unmodifiable(inventories),
+       quotes = List.unmodifiable(quotes),
+       purchases = List.unmodifiable(purchases),
+       commercialEvents = List.unmodifiable(commercialEvents);
   final bool catalogEnabled;
   final List<String> categories, units;
   final List<Product> products;
@@ -458,6 +507,9 @@ class TradeData {
   final List<TradeOrder> orders;
   final List<StockMovement> movements;
   final List<StockInventory> inventories;
+  final List<TradeQuote> quotes;
+  final List<PurchaseOrder> purchases;
+  final List<CommercialEvent> commercialEvents;
   TradeData copyWith({
     bool? catalogEnabled,
     List<String>? categories,
@@ -467,6 +519,9 @@ class TradeData {
     List<TradeOrder>? orders,
     List<StockMovement>? movements,
     List<StockInventory>? inventories,
+    List<TradeQuote>? quotes,
+    List<PurchaseOrder>? purchases,
+    List<CommercialEvent>? commercialEvents,
   }) => TradeData(
     catalogEnabled: catalogEnabled ?? this.catalogEnabled,
     categories: categories ?? this.categories,
@@ -476,6 +531,9 @@ class TradeData {
     orders: orders ?? this.orders,
     movements: movements ?? this.movements,
     inventories: inventories ?? this.inventories,
+    quotes: quotes ?? this.quotes,
+    purchases: purchases ?? this.purchases,
+    commercialEvents: commercialEvents ?? this.commercialEvents,
   );
   Map<String, dynamic> toJson() => {
     'version': 2,
@@ -487,6 +545,9 @@ class TradeData {
     'orders': orders.map((e) => e.toJson()).toList(),
     'movements': movements.map((e) => e.toJson()).toList(),
     'inventories': inventories.map((e) => e.toJson()).toList(),
+    'quotes': quotes.map((e) => e.toJson()).toList(),
+    'purchases': purchases.map((e) => e.toJson()).toList(),
+    'commercialEvents': commercialEvents.map((e) => e.toJson()).toList(),
   };
   factory TradeData.fromJson(Map<String, dynamic> j) {
     if (j['version'] != 1 && j['version'] != 2) {
@@ -508,6 +569,15 @@ class TradeData {
           .toList(),
       orders: (j['orders'] as List)
           .map((e) => TradeOrder.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      quotes: (j['quotes'] as List? ?? [])
+          .map((e) => TradeQuote.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      purchases: (j['purchases'] as List? ?? [])
+          .map((e) => PurchaseOrder.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      commercialEvents: (j['commercialEvents'] as List? ?? [])
+          .map((e) => CommercialEvent.fromJson(e as Map<String, dynamic>))
           .toList(),
       inventories: (j['inventories'] as List? ?? [])
           .map((e) => StockInventory.fromJson(e as Map<String, dynamic>))

@@ -5,6 +5,8 @@ import 'models.dart';
 import 'catalog_photos.dart';
 import 'public_catalog.dart' show normalizeCatalogText;
 
+part 'commercial_store.dart';
+
 class TradeStore extends ChangeNotifier {
   TradeStore(this.repository);
   final TradeRepository repository;
@@ -520,9 +522,11 @@ class TradeStore extends ChangeNotifier {
     }
     // Orders retain their original customer name; only their stable ID links this record.
     if (contact.kind != original.kind &&
-        _data.orders.any((o) => o.customerId == original.id)) {
+        (_data.orders.any((o) => o.customerId == original.id) ||
+            _data.quotes.any((q) => q.customerId == original.id) ||
+            _data.purchases.any((p) => p.supplierId == original.id))) {
       throw ArgumentError(
-        'Le type d’un client lié à des commandes ne peut pas être modifié.',
+        'Le type d’un partenaire lié à des documents commerciaux ne peut pas être modifié.',
       );
     }
     final next = _cleanContact(contact)
@@ -567,17 +571,28 @@ class TradeStore extends ChangeNotifier {
     required String customerId,
     required int quantity,
     required String destination,
+    String? expectedUnit,
+    int? expectedPrice,
   }) async {
     _checkText(destination, 'La destination');
     final p = _data.products.firstWhere((p) => p.id == productId);
     if (p.status == ProductStatus.archived) {
       throw ArgumentError('Ce produit est archivé.');
     }
+    if (expectedUnit != null) {
+      _sameUnit(p, expectedUnit);
+    }
+    if (expectedPrice != null && expectedPrice != p.price) {
+      throw StateError(
+        'Le prix du produit a changé. Fermez le formulaire et vérifiez le prix actuel.',
+      );
+    }
     final c = _data.contacts.firstWhere((c) => c.id == customerId);
     if (c.archived) throw ArgumentError('Ce client est archivé.');
     if (c.kind != ContactKind.client) {
       throw ArgumentError('Sélectionnez un client.');
     }
+    _validateCommercialAmount(quantity, p.price);
     if (quantity <= 0 || quantity > p.quantity) {
       throw ArgumentError('Quantité invalide ou stock insuffisant.');
     }
@@ -590,6 +605,7 @@ class TradeStore extends ChangeNotifier {
       productName: p.name,
       quantity: quantity,
       unitPrice: p.price,
+      unit: p.unit,
       status: OrderStatus.confirmed,
       createdAt: now,
       destination: destination.trim(),
@@ -627,6 +643,16 @@ class TradeStore extends ChangeNotifier {
 
   Future<void> changeOrderStatus(String id, OrderStatus status) async {
     final order = _data.orders.firstWhere((o) => o.id == id);
+    if (status == OrderStatus.delivered &&
+        order.status == OrderStatus.shipped) {
+      await recordDelivery(
+        id,
+        order.remainingQuantity,
+        'Livraison du solde',
+        expectedRevision: order.revision,
+      );
+      return;
+    }
     final allowed = switch (order.status) {
       OrderStatus.confirmed => [OrderStatus.shipped, OrderStatus.cancelled],
       OrderStatus.shipped => [OrderStatus.delivered],
@@ -641,6 +667,7 @@ class TradeStore extends ChangeNotifier {
       final original = _data.products.firstWhere(
         (p) => p.id == order.productId,
       );
+      _sameUnit(original, order.unit);
       if (original.quantity + order.quantity > 1000000000) {
         throw ArgumentError('Le retour dépasserait le stock maximal autorisé.');
       }
@@ -686,7 +713,10 @@ class TradeStore extends ChangeNotifier {
         _data.contacts.isNotEmpty ||
         _data.orders.isNotEmpty ||
         _data.movements.isNotEmpty ||
-        _data.inventories.isNotEmpty) {
+        _data.inventories.isNotEmpty ||
+        _data.quotes.isNotEmpty ||
+        _data.purchases.isNotEmpty ||
+        _data.commercialEvents.isNotEmpty) {
       throw StateError('Les exemples sont réservés à un espace vide.');
     }
     final now = DateTime.now();

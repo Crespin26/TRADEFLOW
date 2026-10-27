@@ -30,7 +30,7 @@ La fiche client présente les commandes internes liées à son identifiant stabl
 
 Le bouton **Nouvelle commande** présélectionne le client de la fiche. Les contraintes de stock existantes restent appliquées. Il ne s’agit pas d’une commande publique simulée.
 
-Un client déjà lié à une commande conserve son type. Sans commande, une fiche peut changer de type. La fiche fournisseur contient ses informations professionnelles et notes ; achats, réceptions et historique fournisseur seront raccordés au module Achats. Aucun historique d’achat fictif n’est créé.
+Un partenaire lié à une commande, un devis ou un achat conserve son type. Sans document commercial lié, une fiche peut changer de type. La fiche fournisseur contient ses informations professionnelles, notes et achats réels saisis localement. La [phase 6](COMMERCIAL_OPERATIONS.md) permet désormais achats, réceptions partielles, retours et journal fournisseur. Les devis sont également accessibles depuis la fiche client.
 
 ## Archivage, restauration et sauvegarde
 

@@ -1,3 +1,6 @@
+import '../operations/document_editor.dart';
+import '../operations/operation_details.dart';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -395,11 +398,55 @@ class PartnerDetailPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 12),
-                if (c.kind == ContactKind.supplier)
-                  const Text(
-                    'Le suivi des achats fournisseurs sera ajouté avec le module Achats.',
-                  )
-                else ...[
+                if (c.kind == ContactKind.supplier) ...[
+                  if (!c.archived)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
+                        onPressed: store.busy
+                            ? null
+                            : () => commercialDocumentEditor(
+                                context,
+                                store,
+                                purchase: true,
+                                partnerId: c.id,
+                              ),
+                        child: const Text('Nouvel achat'),
+                      ),
+                    ),
+                  if (!store.data.purchases.any((p) => p.supplierId == c.id))
+                    const Text('Aucun achat enregistré pour ce fournisseur.'),
+                  for (final p in store.data.purchases.where(
+                    (p) => p.supplierId == c.id,
+                  ))
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(p.productName),
+                            FlowBadge(p.status.label),
+                            Text(
+                              '${publicPrice(p.total)} · Reçu ${p.receivedQuantity}/${p.quantity} · Retourné ${p.returnedQuantity}',
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.push<void>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => PurchaseDetailPage(
+                                    store: store,
+                                    id: p.id,
+                                  ),
+                                ),
+                              ),
+                              child: const Text('Ouvrir l’achat'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ] else ...[
                   Wrap(
                     spacing: 12,
                     runSpacing: 8,
@@ -436,6 +483,68 @@ class PartnerDetailPage extends StatelessWidget {
                               ).format(o.createdAt.toLocal()),
                             ),
                             Text('Destination : ${o.destination}'),
+                            Text(
+                              'Livré ${o.deliveredQuantity}/${o.quantity} · Retourné ${o.returnedQuantity}',
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.push<void>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      SaleDetailPage(store: store, id: o.id),
+                                ),
+                              ),
+                              child: const Text('Suivi et retours'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+                if (c.kind == ContactKind.client) ...[
+                  const SizedBox(height: 24),
+                  Text(
+                    'Devis client',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  if (!c.archived)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
+                        onPressed: store.busy
+                            ? null
+                            : () => commercialDocumentEditor(
+                                context,
+                                store,
+                                partnerId: c.id,
+                              ),
+                        child: const Text('Nouveau devis'),
+                      ),
+                    ),
+                  if (!store.data.quotes.any((q) => q.customerId == c.id))
+                    const Text('Aucun devis enregistré pour ce client.'),
+                  for (final q in store.data.quotes.where(
+                    (q) => q.customerId == c.id,
+                  ))
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(q.productName),
+                            FlowBadge(q.status.label),
+                            Text(publicPrice(q.total)),
+                            TextButton(
+                              onPressed: () => Navigator.push<void>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      QuoteDetailPage(store: store, id: q.id),
+                                ),
+                              ),
+                              child: const Text('Ouvrir le devis'),
+                            ),
                           ],
                         ),
                       ),
