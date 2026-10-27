@@ -20,12 +20,14 @@ class FoundationShell extends StatefulWidget {
     this.partnersBuilder,
     this.operationsBuilder,
     this.documentsBuilder,
+    this.pilotageBuilder,
   });
   final WidgetBuilder managementBuilder;
   final WidgetBuilder? stockBuilder;
   final WidgetBuilder? partnersBuilder;
   final Widget Function(String)? operationsBuilder;
   final WidgetBuilder? documentsBuilder;
+  final Widget Function(DemoProfile)? pilotageBuilder;
   @override
   State<FoundationShell> createState() => _FoundationShellState();
 }
@@ -243,6 +245,27 @@ class _FoundationShellState extends State<FoundationShell> {
                               ),
                             ),
                             const SizedBox(height: 24),
+                            if (selected == 0 &&
+                                ![
+                                  DemoProfile.visitor,
+                                  DemoProfile.client,
+                                ].contains(activeProfile) &&
+                                widget.pilotageBuilder != null) ...[
+                              FlowStateView(
+                                title: 'Pilotage de l’activité',
+                                description: 'Indicateurs et rapports calculés depuis les données locales, avec filtres de période.',
+                                icon: Icons.analytics_outlined,
+                                actionLabel: 'Ouvrir le pilotage',
+                                onAction: () => Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        widget.pilotageBuilder!(activeProfile),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                            ],
                             if (selected == 0 &&
                                 activeProfile == DemoProfile.visitor)
                               PublicHome(

@@ -14,6 +14,8 @@ Le thème commun, les composants réutilisables et les états vide/chargement/er
 
 Pour retrouver les fonctionnalités locales existantes : **Administrateur → Gestion → Ouvrir la gestion locale**. Les exemples de produits se chargent depuis l’accueil de cette gestion, lorsque l’espace local est vide.
 
+Le [pilotage](docs/PILOTAGE.md) propose des indicateurs par profil et par période, des alertes opérationnelles, une activité sur sept jours et des rapports CSV copiables. Les montants sont calculés exactement depuis les documents et événements locaux.
+
 Les [documents commerciaux](docs/BUSINESS_DOCUMENTS.md) disposent d’une bibliothèque, d’un aperçu, de l’export PDF et de versions archivées avec les coordonnées de l’entreprise.
 
 La [phase 6 — Opérations commerciales](docs/COMMERCIAL_OPERATIONS.md) ajoute les devis convertibles, achats fournisseurs, réceptions et livraisons partielles, retours clients/fournisseurs et leur journal. Les documents portent une référence produit et des montants XOF ; les opérations et leurs effets sur le stock sont sauvegardés ensemble.

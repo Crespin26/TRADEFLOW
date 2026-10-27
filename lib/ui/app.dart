@@ -1,3 +1,4 @@
+import 'pilotage/pilotage_page.dart';
 import 'documents/documents_page.dart';
 import 'fulfilment/fulfilment_page.dart';
 import 'operations/operations_page.dart';
@@ -45,6 +46,8 @@ class TradeFlowApp extends StatelessWidget {
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       theme: buildTradeFlowTheme(),
       home: FoundationShell(
+        pilotageBuilder: (profile) =>
+            PilotagePage(store: store, profile: profile),
         documentsBuilder: (_) => DocumentsPage(store: store),
         stockBuilder: (_) => StockPage(store: store),
         partnersBuilder: (_) =>
@@ -376,6 +379,15 @@ class _TradeShellState extends State<TradeShell> {
       (s, o) => s + (o.deliveredQuantity - o.returnedQuantity) * o.unitPrice,
     );
     return [
+      OutlinedButton.icon(
+        onPressed: () => Navigator.push<void>(
+          context,
+          MaterialPageRoute(builder: (_) => PilotagePage(store: store)),
+        ),
+        icon: const Icon(Icons.analytics_outlined),
+        label: const Text('Pilotage'),
+      ),
+      const SizedBox(height: 12),
       OutlinedButton.icon(
         onPressed: () => Navigator.push<void>(
           context,
