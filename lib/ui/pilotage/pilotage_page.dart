@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../domain/pilotage.dart';
-import '../../domain/trade_store.dart';
+import '../../application/trade_store.dart';
 import '../demo_profile.dart';
 import '../design_system/components.dart';
 import '../design_system/theme.dart';

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../domain/models.dart';
-import '../../domain/trade_store.dart';
+import '../../application/trade_store.dart';
 import '../../domain/public_catalog.dart' show normalizeCatalogText;
 import '../design_system/components.dart';
 import '../catalog/product_widgets.dart' show publicPrice;

@@ -9,11 +9,11 @@ import 'package:image/image.dart' as img;
 import 'package:tradeflow_mobile/domain/catalog_photos.dart';
 import 'package:tradeflow_mobile/domain/models.dart';
 import 'package:tradeflow_mobile/domain/photo_import.dart';
-import 'package:tradeflow_mobile/domain/product_catalog.dart';
-import 'package:tradeflow_mobile/domain/shopping_session.dart';
-import 'package:tradeflow_mobile/domain/trade_store.dart';
+import 'package:tradeflow_mobile/application/product_catalog.dart';
+import 'package:tradeflow_mobile/application/shopping_session.dart';
+import 'package:tradeflow_mobile/application/trade_store.dart';
 
-import 'trade_store_test.dart' show MemoryRepository;
+import 'support/fakes.dart' show MemoryRepository;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -47,9 +47,9 @@ void main() {
           'threshold': 2,
         },
       ],
-      'contacts': [],
-      'orders': [],
-      'movements': [],
+      'contacts': <Map<String, dynamic>>[],
+      'orders': <Map<String, dynamic>>[],
+      'movements': <Map<String, dynamic>>[],
     };
     final data = TradeData.fromJson(legacy);
     expect(data.products.single.status, ProductStatus.draft);

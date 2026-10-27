@@ -4,9 +4,13 @@ on:
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: flutter-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
@@ -14,8 +18,23 @@ jobs:
           flutter-version: '3.47.3'
           channel: stable
           cache: true
-      - run: flutter pub get
-      - run: dart format --output=none --set-exit-if-changed lib test
-      - run: flutter analyze
-      - run: flutter test
-      - run: flutter build web --release
+      - name: Restore locked dependencies
+        run: flutter pub get --enforce-lockfile
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed lib test tool
+      - name: Strict static analysis
+        run: flutter analyze
+      - name: Tests and architecture guards
+        run: flutter test --coverage --reporter expanded
+      - name: Enforce production coverage
+        run: dart run tool/check_coverage.dart
+      - name: Build release Web app
+        run: flutter build web --release --no-pub
+      - name: Keep coverage evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ github.sha }}
+          path: coverage/lcov.info
+          retention-days: 7
+          if-no-files-found: warn

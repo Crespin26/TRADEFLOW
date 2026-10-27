@@ -4,11 +4,11 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tradeflow_mobile/domain/models.dart';
-import 'package:tradeflow_mobile/domain/trade_store.dart';
+import 'package:tradeflow_mobile/application/trade_store.dart';
 import 'package:tradeflow_mobile/ui/documents/documents_page.dart';
 import 'package:tradeflow_mobile/ui/design_system/theme.dart';
 
-import 'trade_store_test.dart' show MemoryRepository;
+import 'support/fakes.dart' show MemoryRepository;
 
 void main() {
   for (final width in [320.0, 1440.0]) {

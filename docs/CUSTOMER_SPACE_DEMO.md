@@ -73,7 +73,7 @@ Les stocks, clients et commandes de la gestion locale sont indépendants. Les do
 
 - `lib/domain/shopping_models.dart` : lignes de panier, adresses et reçus.
 - `lib/domain/customer_models.dart` : commandes, statuts, adresses, demandes et notifications client.
-- `lib/domain/shopping_session.dart` : état et règles de la simulation partagés par les phases 3 et 4.
+- `lib/application/shopping_session.dart` : état et règles de la simulation partagés par les phases 3 et 4.
 - `lib/ui/customer/` : accueil, historique/détail, profil/adresses, documents, demandes et notifications.
 
 La prochaine phase concerne la gestion interne : produits complets et publication, inventaires, entrepôts et partenaires. Firebase reste différé conformément à l’approche « interfaces d’abord ».

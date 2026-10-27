@@ -2,21 +2,19 @@ import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 
-import 'public_catalog.dart';
-import 'shopping_models.dart';
-import 'customer_models.dart';
-export 'shopping_models.dart';
-export 'customer_models.dart';
-
-abstract interface class PublicCartRepository {
-  Future<Map<String, int>> load();
-  Future<void> save(Map<String, int> quantities);
-}
+import '../domain/repositories.dart';
+import '../domain/public_catalog.dart';
+import '../domain/shopping_models.dart';
+import '../domain/customer_models.dart';
+export '../domain/shopping_models.dart';
+export '../domain/customer_models.dart';
 
 /// UI simulation only. No authentication, stock reservation or real order occurs.
 class ShoppingSession extends ChangeNotifier {
-  ShoppingSession({this.repository}) : ready = repository == null;
-  final PublicCartRepository? repository;
+  ShoppingSession({PublicCartRepository? repository})
+    : _repository = repository,
+      _ready = repository == null;
+  final PublicCartRepository? _repository;
   List<PublicProduct> _products = demoPublicProducts;
   void updateCatalog(List<PublicProduct> products, {bool notify = true}) {
     _products = List.unmodifiable(products);
@@ -32,11 +30,17 @@ class ShoppingSession extends ChangeNotifier {
       .toList();
   Map<String, int> _quantities = {};
   Map<String, int> get quantities => UnmodifiableMapView(_quantities);
-  bool ready, busy = false;
-  String? storageError;
-  String? email;
-  String displayName = '';
-  bool verified = false;
+  bool _ready, _busy = false;
+  bool get ready => _ready;
+  bool get busy => _busy;
+  String? _storageError;
+  String? get storageError => _storageError;
+  String? _email;
+  String? get email => _email;
+  String _displayName = '';
+  String get displayName => _displayName;
+  bool _verified = false;
+  bool get verified => _verified;
   bool get signedIn => email != null;
   final List<DemoReceipt> _receipts = [];
   List<DemoReceipt> get receipts =>
@@ -52,7 +56,8 @@ class ShoppingSession extends ChangeNotifier {
   final List<CustomerAddress> _addresses = [];
   final List<CustomerRequest> _requests = [];
   final Set<String> _readNotices = {};
-  String phone = '';
+  String _phone = '';
+  String get phone => _phone;
   String? _deliveryId, _billingId;
   int _serial = 0;
   bool get customerReady => signedIn && verified;
@@ -82,8 +87,8 @@ class ShoppingSession extends ChangeNotifier {
     _addresses.clear();
     _requests.clear();
     _readNotices.clear();
-    displayName = '';
-    phone = '';
+    _displayName = '';
+    _phone = '';
     _deliveryId = null;
     _billingId = null;
   }
@@ -95,8 +100,8 @@ class ShoppingSession extends ChangeNotifier {
         number.trim().length > 160) {
       throw ArgumentError('Vérifiez le nom et le téléphone.');
     }
-    displayName = name.trim();
-    phone = number.trim();
+    _displayName = name.trim();
+    _phone = number.trim();
     notifyListeners();
   }
 
@@ -307,23 +312,23 @@ class ShoppingSession extends ChangeNotifier {
 
   Future<void> load() async {
     if (busy) return;
-    busy = true;
+    _busy = true;
     notifyListeners();
     try {
-      final values = await repository?.load() ?? <String, int>{};
+      final values = await _repository?.load() ?? <String, int>{};
       for (final entry in values.entries) {
         if (entry.key.isEmpty || entry.value < 1 || entry.value > 999) {
           throw const FormatException('Panier invalide');
         }
       }
       _quantities = Map.of(values);
-      ready = true;
-      storageError = null;
+      _ready = true;
+      _storageError = null;
     } catch (_) {
-      ready = false;
-      storageError = 'Le panier enregistré est illisible. Réessayez ou réinitialisez-le explicitement.';
+      _ready = false;
+      _storageError = 'Le panier enregistré est illisible. Réessayez ou réinitialisez-le explicitement.';
     } finally {
-      busy = false;
+      _busy = false;
       notifyListeners();
     }
   }
@@ -333,15 +338,15 @@ class ShoppingSession extends ChangeNotifier {
     if (!ready && !reset) {
       throw StateError('Le panier doit être chargé avant modification.');
     }
-    busy = true;
+    _busy = true;
     notifyListeners();
     try {
-      await repository?.save(next);
+      await _repository?.save(next);
       _quantities = Map.of(next);
-      ready = true;
-      storageError = null;
+      _ready = true;
+      _storageError = null;
     } finally {
-      busy = false;
+      _busy = false;
       notifyListeners();
     }
   }
@@ -381,22 +386,22 @@ class ShoppingSession extends ChangeNotifier {
     }
     final identity = value.trim().toLowerCase();
     if (email != identity) _clearCustomer();
-    email = identity;
-    if (name.trim().isNotEmpty) displayName = name.trim();
-    verified = !registration;
+    _email = identity;
+    if (name.trim().isNotEmpty) _displayName = name.trim();
+    _verified = !registration;
     notifyListeners();
   }
 
   void verifyDemo() {
     if (!signedIn) throw StateError('Connectez-vous d’abord.');
-    verified = true;
+    _verified = true;
     notifyListeners();
   }
 
   void signOut() {
     if (busy) throw StateError('Une opération est déjà en cours.');
-    email = null;
-    verified = false;
+    _email = null;
+    _verified = false;
     _clearCustomer();
     notifyListeners();
   }

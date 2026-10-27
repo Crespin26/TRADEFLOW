@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:printing/printing.dart';
 
 import '../../domain/business_documents.dart';
-import '../../domain/trade_store.dart';
+import '../../application/trade_store.dart';
 import '../../domain/public_catalog.dart' show normalizeCatalogText;
-import '../../data/business_pdf.dart';
+import 'business_pdf.dart';
 import '../forms.dart' show field, SaveDialog, showEditor, friendlyError;
 import '../design_system/components.dart';
 

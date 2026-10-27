@@ -18,6 +18,7 @@ TradeFlow est actuellement un prototype Flutter local, avec un catalogue d’exe
 | Livraisons et retours | Disponible localement | Suivi transporteur, retards et retours revendables ou exclus du disponible. Voir [DELIVERIES_AND_RETURNS.md](DELIVERIES_AND_RETURNS.md). |
 | Documents commerciaux | Disponible localement | Devis, bons, proformas, export PDF et versions archivées. Voir [BUSINESS_DOCUMENTS.md](BUSINESS_DOCUMENTS.md). |
 | Pilotage | Disponible localement | Vues par profil, périodes, indicateurs, alertes, activité et CSV. Voir [PILOTAGE.md](PILOTAGE.md). |
+| Qualité et architecture | Renforcées et vérifiées localement | Couches séparées, modèles découpés, intégrité des instantanés, cache d’écriture corrigé, cycle de vie et CI avec seuils de couverture. Voir [ARCHITECTURE.md](ARCHITECTURE.md) et [QUALITY.md](QUALITY.md). |
 | Firebase | Préparation documentaire uniquement | Procédure de raccordement et règles de refus par défaut ; aucun service Firebase connecté. |
 
 Les commandes publiques simulées ne modifient pas le stock ni les commandes de la gestion interne. Le panier public conserve uniquement les identifiants des produits et leurs quantités. Les sessions, adresses et reçus simulés sont temporaires ; les mots de passe ne sont pas persistés.
@@ -55,8 +56,9 @@ Les autres développeurs doivent sélectionner leur propre SDK via **Flutter: Ch
 
 - Format Dart : conforme.
 - Analyse Flutter avec le SDK permanent : aucune anomalie signalée.
-- Tests : 146 scénarios réussis avec le SDK permanent.
+- Tests : 172 scénarios réussis avec le SDK permanent.
 - Racines de packages : 72 présentes, aucune temporaire.
+- Couverture de lignes : 88,35 % globale, 98,02 % domaine, 97,11 % application ; seuils CI respectés.
 - Diff Git : aucune erreur d’espacement signalée.
 - Compilation Web de production : réussie avec le SDK permanent.
 
@@ -70,15 +72,15 @@ Les tests couvrent notamment les règles de stock, l’annulation, la persistanc
 | 6 — Évolutions opérations | Documents multi-lignes, clôture de reliquats et intégrations aux services réels. Le parcours local à une référence par document est implémenté. |
 | 7 — Finance et international | Factures, paiements simulés, devises, coûts et documents internationaux. |
 | 8 — Administration | Collaborateurs, permissions réelles et autres paramètres. Le pilotage et les coordonnées de l’entreprise sont implémentés localement. |
-| 9 — Validation des interfaces | Parcours complets, accessibilité et essais sur appareils réels. |
+| 9 — Validation sur appareils | Essais Android/iOS, lecteur d’écran, clavier et partage natif. Les gardes d’architecture et contrôles automatisés sont en place. |
 | 10 — Services réels | Authentification Firebase, Firestore, Storage, permissions, transactions, synchronisation, notifications et paiements. |
 
 ## État avant le prochain commit/push
 
-Les commits dédiés couvrent la phase 6 (`3f6b32f`), les livraisons et retours (`655ef24`) et les documents PDF (`9780c10`). Le pilotage constitue le dernier volet de cette séquence. Aucun push n’est effectué dans cette étape.
+Les commits dédiés couvrent la phase 6 (`3f6b32f`), les livraisons et retours (`655ef24`) et les documents PDF (`9780c10`). Le pilotage est enregistré dans `e1ba784`. Le volet qualité et architecture ajoute les corrections, le découpage et les gardes de non-régression. Aucun push n’est effectué dans cette étape.
 
 Les réglages SDK personnels et les fichiers générés restent exclus. Les fichiers de configuration VS Code partageables peuvent être commités. Le push doit transmettre les sources et la documentation, sans les caches ni le dossier de compilation.
 
 ## Formulation pour expliquer le problème
 
-> Les erreurs affichées dans VS Code venaient d’une configuration locale des dépendances qui référençait un SDK Flutter et un cache temporaires. Les imports non résolus provoquaient une cascade de diagnostics. Les dépendances ont été régénérées avec l’installation permanente et le SDK de l’IDE a été configuré. L’analyse ne signale plus d’anomalie et les 146 tests passent ; un rechargement de VS Code permet de rafraîchir les diagnostics de l’éditeur.
+> Les erreurs affichées dans VS Code venaient d’une configuration locale des dépendances qui référençait un SDK Flutter et un cache temporaires. Les imports non résolus provoquaient une cascade de diagnostics. Les dépendances ont été régénérées avec l’installation permanente et le SDK de l’IDE a été configuré. L’analyse ne signale plus d’anomalie et les 172 tests passent ; un rechargement de VS Code permet de rafraîchir les diagnostics de l’éditeur.

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tradeflow_mobile/domain/catalog_photos.dart';
 import 'package:tradeflow_mobile/domain/models.dart';
-import 'package:tradeflow_mobile/domain/trade_store.dart';
+import 'package:tradeflow_mobile/application/trade_store.dart';
 import 'package:tradeflow_mobile/ui/catalog/catalog_page.dart';
 import 'package:tradeflow_mobile/ui/catalog/product_detail.dart';
 import 'package:tradeflow_mobile/ui/products/product_editor.dart';
@@ -10,7 +10,7 @@ import 'package:tradeflow_mobile/ui/products/products_management.dart';
 import 'package:tradeflow_mobile/ui/shopping/shopping_scope.dart';
 import 'package:tradeflow_mobile/ui/design_system/theme.dart';
 
-import 'trade_store_test.dart' show MemoryRepository;
+import 'support/fakes.dart' show MemoryRepository;
 
 void main() {
   for (final width in [320.0, 1440.0]) {

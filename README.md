@@ -14,6 +14,8 @@ Le thème commun, les composants réutilisables et les états vide/chargement/er
 
 Pour retrouver les fonctionnalités locales existantes : **Administrateur → Gestion → Ouvrir la gestion locale**. Les exemples de produits se chargent depuis l’accueil de cette gestion, lorsque l’espace local est vide.
 
+L’[architecture](docs/ARCHITECTURE.md) sépare domaine, contrôleurs, stockage et interfaces. Le [guide qualité](docs/QUALITY.md) décrit les contrôles d’intégrité, la CI et les seuils de couverture.
+
 Le [pilotage](docs/PILOTAGE.md) propose des indicateurs par profil et par période, des alertes opérationnelles, une activité sur sept jours et des rapports CSV copiables. Les montants sont calculés exactement depuis les documents et événements locaux.
 
 Les [documents commerciaux](docs/BUSINESS_DOCUMENTS.md) disposent d’une bibliothèque, d’un aperçu, de l’export PDF et de versions archivées avec les coordonnées de l’entreprise.
@@ -68,10 +70,12 @@ Si les imports Flutter sont soulignés en rouge, régénérer les dépendances a
 ## Vérification
 
 ```sh
-dart format --output=none --set-exit-if-changed lib test
+flutter pub get --enforce-lockfile
+dart format --output=none --set-exit-if-changed lib test tool
 flutter analyze
-flutter test
-flutter build web --release
+flutter test --coverage --reporter expanded
+dart run tool/check_coverage.dart
+flutter build web --release --no-pub
 ```
 
 Le workflow GitHub Actions exécute ces contrôles lors des push et des pull requests. Aucun workflow ne publie ni ne déploie l’application.
@@ -96,26 +100,25 @@ Les données sont enregistrées sur l’appareil avec `shared_preferences` dans 
 
 ```text
 lib/
-  main.dart                    # Démarrage et accès au stockage local
-  domain/models.dart           # Produits, contacts, commandes et mouvements
-  domain/trade_store.dart      # Règles métier et état observable
-  data/trade_repository.dart   # Contrat de stockage et implémentation locale
-  ui/app.dart                  # Navigation, tableau de bord et listes
-  ui/forms.dart                # Formulaires et validation
-  ui/design_system/            # Thème, composants et états communs
-  ui/demo_profile.dart         # Profils et destinations simulés
-  ui/foundation_shell.dart     # Navigation publique, client et interne
-  ui/foundation_gallery.dart   # Guide interactif des composants
-  ui/catalog/                  # Accueil public, catalogue et fiches produit
-  ui/shopping/                 # Panier, connexion et commande simulés
-  ui/customer/                 # Espace client de démonstration
-  domain/customer_models.dart  # Commandes, demandes, adresses et notifications client
-  domain/shopping_session.dart # État du parcours public indépendant des stocks
-  data/public_cart_repository.dart # Sauvegarde locale du panier public
-  domain/public_catalog.dart   # Modèle public, filtres et exemples
-  domain/product_catalog.dart  # Projection des produits publiés
-firebase/                      # Règles de refus par défaut
-test/                         # Tests métier, persistance et interface
+  main.dart                     # Composition et démarrage
+  domain/
+    models.dart                 # Entrée stable des entités
+    entities/                   # Produits, partenaires, commandes, stocks et agrégat
+    repositories.dart           # Ports de stockage
+    snapshot_validation.dart    # Intégrité des données avant lecture/écriture
+  application/
+    trade_store.dart            # État observable et sauvegarde commune
+    *_operations.dart           # Commandes métier par fonctionnalité
+    shopping_session.dart       # Parcours public simulé
+    product_catalog.dart        # Catalogue observable
+    demo_data.dart              # Exemples isolés
+  data/                         # Adaptateurs de stockage local
+  ui/                           # Écrans, composants et mise en page PDF
+firebase/                       # Règles de refus par défaut
+test/
+  support/                      # Fakes et aides de navigation partagés
+  *_test.dart                   # Métier, persistance, interfaces et architecture
+tool/check_coverage.dart        # Seuils de couverture utilisés par la CI
 ```
 
 Voir [docs/ROADMAP.md](docs/ROADMAP.md) pour la suite du développement.

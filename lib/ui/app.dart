@@ -14,12 +14,12 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 
 import '../domain/models.dart';
-import '../domain/trade_store.dart';
+import '../application/trade_store.dart';
 import 'forms.dart';
 import 'design_system/theme.dart';
 import 'design_system/components.dart';
 import 'foundation_shell.dart';
-import '../domain/shopping_session.dart';
+import '../application/shopping_session.dart';
 import 'shopping/shopping_scope.dart';
 
 const ink = FlowColors.ink;

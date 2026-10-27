@@ -43,7 +43,7 @@ Si les données locales sont illisibles, elles ne sont pas écrasées silencieus
 
 ## Fichiers
 
-- `lib/domain/shopping_session.dart` : panier, session simulée et reçus temporaires.
+- `lib/application/shopping_session.dart` : panier, session simulée et reçus temporaires.
 - `lib/data/public_cart_repository.dart` : sauvegarde locale dédiée.
 - `lib/ui/shopping/shopping_scope.dart` : partage de la session entre les routes.
 - `lib/ui/shopping/cart_page.dart` : lignes du panier et entrée dans le parcours.

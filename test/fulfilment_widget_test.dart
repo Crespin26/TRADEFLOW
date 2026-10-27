@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:tradeflow_mobile/domain/models.dart';
-import 'package:tradeflow_mobile/domain/trade_store.dart';
+import 'package:tradeflow_mobile/application/trade_store.dart';
 import 'package:tradeflow_mobile/ui/fulfilment/fulfilment_page.dart';
 import 'package:tradeflow_mobile/ui/design_system/theme.dart';
 
-import 'trade_store_test.dart' show MemoryRepository;
-import 'commercial_widget_test.dart' show confirmAction, quantityOperation;
+import 'support/fakes.dart' show MemoryRepository;
+import 'support/commercial_fixtures.dart' show confirmAction, quantityOperation;
 
 void main() {
   setUpAll(() async {

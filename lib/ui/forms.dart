@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../domain/models.dart';
-import '../domain/trade_store.dart';
+import '../application/trade_store.dart';
 import 'design_system/components.dart';
 
 String friendlyError(Object error) => switch (error) {

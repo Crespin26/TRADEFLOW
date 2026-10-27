@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/shopping_session.dart';
+import '../../application/shopping_session.dart';
 import '../catalog/product_widgets.dart';
 import '../design_system/components.dart';
 import '../design_system/theme.dart';

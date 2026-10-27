@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../domain/models.dart';
-import '../../domain/trade_store.dart';
+import '../../application/trade_store.dart';
 import '../forms.dart' show field, friendlyError;
 import '../catalog/product_widgets.dart' show publicPrice;
 

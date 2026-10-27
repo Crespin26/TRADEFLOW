@@ -5,10 +5,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tradeflow_mobile/domain/models.dart';
 import 'package:tradeflow_mobile/domain/business_documents.dart';
 import 'package:tradeflow_mobile/domain/document_catalog.dart';
-import 'package:tradeflow_mobile/domain/trade_store.dart';
-import 'package:tradeflow_mobile/data/business_pdf.dart';
+import 'package:tradeflow_mobile/application/trade_store.dart';
+import 'package:tradeflow_mobile/ui/documents/business_pdf.dart';
 
-import 'trade_store_test.dart' show MemoryRepository;
+import 'support/fakes.dart' show MemoryRepository;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

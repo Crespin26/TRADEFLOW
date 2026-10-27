@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tradeflow_mobile/domain/shopping_session.dart';
+import 'package:tradeflow_mobile/application/shopping_session.dart';
 
-import 'shopping_session_test.dart' show exampleAddress, MemoryCartRepository;
+import 'support/fakes.dart' show exampleAddress, MemoryCartRepository;
 
 ShoppingSession signedIn() =>
     ShoppingSession()..signInDemo('client@example.com');

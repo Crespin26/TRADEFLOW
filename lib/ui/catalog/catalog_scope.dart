@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../../domain/product_catalog.dart';
+import '../../application/product_catalog.dart';
 import '../../domain/public_catalog.dart';
 
 class CatalogScope extends InheritedNotifier<ProductCatalog> {

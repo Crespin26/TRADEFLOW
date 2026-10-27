@@ -3,8 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/trade_repository.dart';
 import 'data/public_cart_repository.dart';
-import 'domain/shopping_session.dart';
-import 'domain/trade_store.dart';
+import 'application/shopping_session.dart';
+import 'application/trade_store.dart';
 import 'ui/app.dart';
 import 'ui/design_system/theme.dart';
 import 'ui/design_system/components.dart';

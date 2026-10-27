@@ -1,13 +1,11 @@
+import 'local_preferences.dart';
+
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/models.dart';
-
-abstract interface class TradeRepository {
-  Future<TradeData> load();
-  Future<void> save(TradeData data);
-}
+import '../domain/repositories.dart';
 
 /// One versioned snapshot keeps orders, stock and history together.
 /// This is a local prototype store, not a multi-user business database.
@@ -18,7 +16,7 @@ class LocalTradeRepository implements TradeRepository {
 
   @override
   Future<TradeData> load() async {
-    final raw = preferences.getString(storageKey);
+    final raw = await readLocalString(preferences, storageKey);
     if (raw == null) return TradeData();
     return TradeData.fromJson(jsonDecode(raw) as Map<String, dynamic>);
   }
@@ -31,7 +29,11 @@ class LocalTradeRepository implements TradeRepository {
         'Sauvegarde locale trop volumineuse (4 Mo maximum). Retirez des photos inutilisées.',
       );
     }
-    final success = await preferences.setString(storageKey, encoded);
-    if (!success) throw StateError('La sauvegarde locale a échoué.');
+    await writeLocalString(
+      preferences,
+      storageKey,
+      encoded,
+      failureMessage: 'La sauvegarde locale a échoué.',
+    );
   }
 }

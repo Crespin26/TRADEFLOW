@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/models.dart';
-import '../../domain/trade_store.dart';
+import '../../application/trade_store.dart';
 import '../forms.dart';
 import '../design_system/components.dart';
 

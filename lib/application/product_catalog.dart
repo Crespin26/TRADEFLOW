@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-import 'models.dart';
-import 'public_catalog.dart';
+import '../domain/models.dart';
+import '../domain/public_catalog.dart';
 import 'trade_store.dart';
 
 PublicProduct publicProduct(Product p) => PublicProduct(

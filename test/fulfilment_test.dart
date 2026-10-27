@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tradeflow_mobile/domain/models.dart';
-import 'package:tradeflow_mobile/domain/trade_store.dart';
+import 'package:tradeflow_mobile/application/trade_store.dart';
 
-import 'trade_store_test.dart' show MemoryRepository;
+import 'support/fakes.dart' show MemoryRepository;
 
 void main() {
   late TradeStore store;

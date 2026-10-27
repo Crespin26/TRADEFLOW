@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../domain/models.dart';
-import '../../domain/trade_store.dart';
+import '../../application/trade_store.dart';
 import '../../domain/public_catalog.dart' show normalizeCatalogText;
 import '../design_system/components.dart';
 import '../operations/operation_details.dart';

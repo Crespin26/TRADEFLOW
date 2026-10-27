@@ -1,30 +1,12 @@
+import 'support/shopping_navigation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tradeflow_mobile/domain/trade_store.dart';
-import 'package:tradeflow_mobile/domain/shopping_session.dart';
+import 'package:tradeflow_mobile/application/trade_store.dart';
+import 'package:tradeflow_mobile/application/shopping_session.dart';
 import 'package:tradeflow_mobile/ui/app.dart';
 
-import 'trade_store_test.dart' show MemoryRepository;
-
-Future<void> tapVisible(WidgetTester tester, Finder finder) async {
-  FocusManager.instance.primaryFocus?.unfocus();
-  await tester.pumpAndSettle();
-  await tester.scrollUntilVisible(
-    finder,
-    250,
-    scrollable: find.byType(Scrollable).first,
-  );
-  await tester.pumpAndSettle();
-  await tester.tap(finder);
-  await tester.pumpAndSettle();
-}
-
-void screen(WidgetTester tester, double width) {
-  tester.view.physicalSize = Size(width, 1000);
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.resetPhysicalSize);
-  addTearDown(tester.view.resetDevicePixelRatio);
-}
+import 'support/fakes.dart' show MemoryRepository;
 
 void main() {
   for (final width in [320.0, 1440.0]) {

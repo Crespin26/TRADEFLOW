@@ -1,34 +1,11 @@
+import 'support/navigation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tradeflow_mobile/domain/trade_store.dart';
+import 'package:tradeflow_mobile/application/trade_store.dart';
 import 'package:tradeflow_mobile/ui/app.dart';
 
-import 'trade_store_test.dart' show MemoryRepository;
-
-Future<void> chooseDemoProfile(WidgetTester tester, String role) async {
-  await tester.tap(find.byTooltip('Changer de profil de démonstration'));
-  await tester.pumpAndSettle();
-  await tester.scrollUntilVisible(
-    find.text(role),
-    180,
-    scrollable: find
-        .descendant(
-          of: find.byKey(const ValueKey('demo-profiles-scroll')),
-          matching: find.byType(Scrollable),
-        )
-        .first,
-  );
-  await tester.tap(find.text(role));
-  await tester.pumpAndSettle();
-}
-
-Future<void> openManagement(WidgetTester tester) async {
-  await chooseDemoProfile(tester, 'Administrateur');
-  await tester.tap(find.text('Gestion').last);
-  await tester.pumpAndSettle();
-  await tester.tap(find.text('Ouvrir la gestion locale'));
-  await tester.pumpAndSettle();
-}
+import 'support/fakes.dart' show MemoryRepository;
 
 void main() {
   testWidgets('mobile navigation, product validation and stock alerts', (

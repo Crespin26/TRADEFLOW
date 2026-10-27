@@ -3,8 +3,8 @@ import '../stock/stock_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/models.dart';
-import '../../domain/trade_store.dart';
-import '../../domain/product_catalog.dart';
+import '../../application/trade_store.dart';
+import '../../application/product_catalog.dart';
 import '../../domain/public_catalog.dart';
 import '../catalog/catalog_photo.dart';
 import '../catalog/product_detail.dart';

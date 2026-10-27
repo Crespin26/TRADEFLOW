@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/models.dart';
-import '../../domain/trade_store.dart';
+import '../../application/trade_store.dart';
 import '../../domain/catalog_photos.dart';
 import '../../domain/photo_import.dart';
 import '../forms.dart' show field, friendlyError;

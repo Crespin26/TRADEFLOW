@@ -1,23 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tradeflow_mobile/data/trade_repository.dart';
-import 'package:tradeflow_mobile/domain/models.dart';
-import 'package:tradeflow_mobile/domain/trade_store.dart';
 
-class MemoryRepository implements TradeRepository {
-  TradeData snapshot = TradeData();
-  bool failSave = false;
-  Completer<void>? gate;
-  @override
-  Future<TradeData> load() async => snapshot;
-  @override
-  Future<void> save(TradeData data) async {
-    if (gate != null) await gate!.future;
-    if (failSave) throw StateError('Storage unavailable');
-    snapshot = data;
-  }
-}
+import 'support/fakes.dart' show MemoryRepository;
+
+import 'package:tradeflow_mobile/domain/models.dart';
+import 'package:tradeflow_mobile/application/trade_store.dart';
 
 void main() {
   late MemoryRepository repository;

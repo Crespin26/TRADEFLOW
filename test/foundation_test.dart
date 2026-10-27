@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tradeflow_mobile/domain/trade_store.dart';
+import 'package:tradeflow_mobile/application/trade_store.dart';
 import 'package:tradeflow_mobile/ui/app.dart';
 import 'package:tradeflow_mobile/ui/demo_profile.dart';
 import 'package:tradeflow_mobile/ui/design_system/components.dart';
 
-import 'trade_store_test.dart' show MemoryRepository;
-import 'widget_test.dart' show chooseDemoProfile;
+import 'support/fakes.dart' show MemoryRepository;
+import 'support/navigation.dart' show chooseDemoProfile;
 
 void viewport(WidgetTester tester, Size size) {
   tester.view.physicalSize = size;

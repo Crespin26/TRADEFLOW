@@ -6,6 +6,8 @@ Guide adapté au dépôt, vérifié le 25 octobre 2026 à partir des documentati
 
 Aujourd’hui : aucun plugin Firebase dans `pubspec.yaml`, aucun projet cloud associé et aucune initialisation Firebase dans `main.dart`. Les interfaces des phases 1 à 4 fonctionnent avec des données locales ou simulées. `firebase.json`, les émulateurs et les règles de refus par défaut existent déjà.
 
+L’[architecture actuelle](ARCHITECTURE.md) place les interfaces `TradeRepository` et `PublicCartRepository` dans `lib/domain/repositories.dart`, les contrôleurs dans `lib/application/` et les adaptateurs locaux dans `lib/data/`. Le futur raccordement doit conserver les invariants de l’agrégat et traiter les transactions côté serveur.
+
 Le raccordement technique est une première étape. Il faudra ensuite remplacer les services simulés par Authentication, des dépôts Firestore et des opérations serveur. Ajouter une configuration Firebase ne synchronise pas automatiquement les données locales et ne crée pas de commandes réelles.
 
 Périmètre initial conseillé : une entreprise, XOF, un entrepôt, catalogue public et opérations internes protégées.

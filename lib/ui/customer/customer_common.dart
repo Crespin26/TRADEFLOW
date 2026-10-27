@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../domain/shopping_session.dart';
+import '../../application/shopping_session.dart';
 import '../design_system/components.dart';
 import '../design_system/theme.dart';
 import '../shopping/auth_page.dart';
