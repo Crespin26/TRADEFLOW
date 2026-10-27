@@ -16,6 +16,8 @@ dependencies:
   cupertino_icons: ^1.0.9
   file_selector: ^1.1.0
   image: ^4.12.0
+  pdf: ^3.13.1
+  printing: ^5.15.1
 
 dev_dependencies:
   flutter_test:
@@ -26,3 +28,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/catalog/
+    - assets/fonts/

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../data/trade_repository.dart';
 import 'models.dart';
+import 'business_documents.dart';
 import 'catalog_photos.dart';
 import 'public_catalog.dart' show normalizeCatalogText;
 
@@ -716,12 +717,15 @@ class TradeStore extends ChangeNotifier {
         _data.inventories.isNotEmpty ||
         _data.quotes.isNotEmpty ||
         _data.purchases.isNotEmpty ||
-        _data.commercialEvents.isNotEmpty) {
+        _data.commercialEvents.isNotEmpty ||
+        _data.deliveryPlans.isNotEmpty ||
+        _data.issuedDocuments.isNotEmpty) {
       throw StateError('Les exemples sont réservés à un espace vide.');
     }
     final now = DateTime.now();
     await _commit(
       TradeData(
+        company: _data.company,
         products: const [
           Product(
             id: 'demo-rice',

@@ -1,3 +1,6 @@
+import 'business_documents.dart' show BusinessDocument;
+import 'company_profile.dart';
+export 'company_profile.dart';
 import 'fulfilment_models.dart';
 export 'fulfilment_models.dart';
 import 'commercial_models.dart';
@@ -470,6 +473,7 @@ class StockInventory {
 class TradeData {
   TradeData({
     List<Product> products = const [],
+    this.company = const CompanyProfile(),
     this.catalogEnabled = false,
     List<String> categories = const [
       'Sans catégorie',
@@ -493,6 +497,7 @@ class TradeData {
     List<PurchaseOrder> purchases = const [],
     List<CommercialEvent> commercialEvents = const [],
     List<DeliveryPlan> deliveryPlans = const [],
+    List<BusinessDocument> issuedDocuments = const [],
   }) : categories = List.unmodifiable(categories),
        units = List.unmodifiable(units),
        products = List.unmodifiable(products),
@@ -503,7 +508,9 @@ class TradeData {
        quotes = List.unmodifiable(quotes),
        purchases = List.unmodifiable(purchases),
        commercialEvents = List.unmodifiable(commercialEvents),
-       deliveryPlans = List.unmodifiable(deliveryPlans);
+       deliveryPlans = List.unmodifiable(deliveryPlans),
+       issuedDocuments = List.unmodifiable(issuedDocuments);
+  final CompanyProfile company;
   final bool catalogEnabled;
   final List<String> categories, units;
   final List<Product> products;
@@ -515,7 +522,9 @@ class TradeData {
   final List<PurchaseOrder> purchases;
   final List<CommercialEvent> commercialEvents;
   final List<DeliveryPlan> deliveryPlans;
+  final List<BusinessDocument> issuedDocuments;
   TradeData copyWith({
+    CompanyProfile? company,
     bool? catalogEnabled,
     List<String>? categories,
     List<String>? units,
@@ -528,7 +537,9 @@ class TradeData {
     List<PurchaseOrder>? purchases,
     List<CommercialEvent>? commercialEvents,
     List<DeliveryPlan>? deliveryPlans,
+    List<BusinessDocument>? issuedDocuments,
   }) => TradeData(
+    company: company ?? this.company,
     catalogEnabled: catalogEnabled ?? this.catalogEnabled,
     categories: categories ?? this.categories,
     units: units ?? this.units,
@@ -541,9 +552,11 @@ class TradeData {
     purchases: purchases ?? this.purchases,
     commercialEvents: commercialEvents ?? this.commercialEvents,
     deliveryPlans: deliveryPlans ?? this.deliveryPlans,
+    issuedDocuments: issuedDocuments ?? this.issuedDocuments,
   );
   Map<String, dynamic> toJson() => {
     'version': 2,
+    'company': company.toJson(),
     'catalogEnabled': catalogEnabled,
     'categories': categories,
     'units': units,
@@ -556,12 +569,16 @@ class TradeData {
     'purchases': purchases.map((e) => e.toJson()).toList(),
     'commercialEvents': commercialEvents.map((e) => e.toJson()).toList(),
     'deliveryPlans': deliveryPlans.map((e) => e.toJson()).toList(),
+    'issuedDocuments': issuedDocuments.map((e) => e.toJson()).toList(),
   };
   factory TradeData.fromJson(Map<String, dynamic> j) {
     if (j['version'] != 1 && j['version'] != 2) {
       throw const FormatException('Version de sauvegarde non prise en charge.');
     }
     return TradeData(
+      company: j['company'] == null
+          ? const CompanyProfile()
+          : CompanyProfile.fromJson(j['company'] as Map<String, dynamic>),
       catalogEnabled: j['catalogEnabled'] as bool? ?? false,
       categories:
           (j['categories'] as List?)?.cast<String>() ??
@@ -577,6 +594,9 @@ class TradeData {
           .toList(),
       orders: (j['orders'] as List)
           .map((e) => TradeOrder.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      issuedDocuments: (j['issuedDocuments'] as List? ?? [])
+          .map((e) => BusinessDocument.fromJson(e as Map<String, dynamic>))
           .toList(),
       deliveryPlans: (j['deliveryPlans'] as List? ?? [])
           .map((e) => DeliveryPlan.fromJson(e as Map<String, dynamic>))

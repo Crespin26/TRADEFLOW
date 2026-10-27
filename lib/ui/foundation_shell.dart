@@ -19,11 +19,13 @@ class FoundationShell extends StatefulWidget {
     this.stockBuilder,
     this.partnersBuilder,
     this.operationsBuilder,
+    this.documentsBuilder,
   });
   final WidgetBuilder managementBuilder;
   final WidgetBuilder? stockBuilder;
   final WidgetBuilder? partnersBuilder;
   final Widget Function(String)? operationsBuilder;
+  final WidgetBuilder? documentsBuilder;
   @override
   State<FoundationShell> createState() => _FoundationShellState();
 }
@@ -310,6 +312,21 @@ class _FoundationShellState extends State<FoundationShell> {
                                     builder: (_) => widget.operationsBuilder!(
                                       destination.label,
                                     ),
+                                  ),
+                                ),
+                              )
+                            else if (activeProfile == DemoProfile.accountant &&
+                                destination.label == 'Factures' &&
+                                widget.documentsBuilder != null)
+                              FlowStateView(
+                                title: 'Documents commerciaux et proformas',
+                                description: 'Consultez les devis, commandes, bons et proformas enregistrés. La facturation fiscale et les paiements ne sont pas encore raccordés.',
+                                icon: Icons.description_outlined,
+                                actionLabel: 'Ouvrir les documents',
+                                onAction: () => Navigator.push<void>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: widget.documentsBuilder!,
                                   ),
                                 ),
                               )

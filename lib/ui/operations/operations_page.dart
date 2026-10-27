@@ -1,3 +1,4 @@
+import '../documents/documents_page.dart';
 import '../fulfilment/fulfilment_page.dart';
 
 import 'package:flutter/material.dart';
@@ -126,6 +127,17 @@ class _OperationsPageState extends State<OperationsPage> {
                           onPressed: () => open(FulfilmentPage(store: store)),
                           icon: const Icon(Icons.local_shipping_outlined),
                           label: const Text('Livraisons et retours'),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton.icon(
+                          onPressed: () => open(DocumentsPage(store: store)),
+                          icon: const Icon(Icons.description_outlined),
+                          label: const Text('Documents commerciaux'),
                         ),
                       ),
                     ),

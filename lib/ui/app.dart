@@ -1,3 +1,4 @@
+import 'documents/documents_page.dart';
 import 'fulfilment/fulfilment_page.dart';
 import 'operations/operations_page.dart';
 import 'operations/operation_details.dart';
@@ -44,6 +45,7 @@ class TradeFlowApp extends StatelessWidget {
       localizationsDelegates: GlobalMaterialLocalizations.delegates,
       theme: buildTradeFlowTheme(),
       home: FoundationShell(
+        documentsBuilder: (_) => DocumentsPage(store: store),
         stockBuilder: (_) => StockPage(store: store),
         partnersBuilder: (_) =>
             PartnersPage(store: store, initialKind: ContactKind.client),
